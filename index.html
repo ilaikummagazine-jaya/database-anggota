@@ -31,15 +31,28 @@
             z-index: 10;
         }
 
-                /* Pengaturan Lebar Kolom Header & Body */
-        table th:nth-child(1), table td:nth-child(1) { width: 50px; text-align: center; } /* No */
-        table th:nth-child(2), table td:nth-child(2) { width: 250px; text-align: center; }  /* Nama & UID */
-        table th:nth-child(3), table td:nth-child(3) { width: 180px; text-align: center; }   /* Jabatan */
-        table th:nth-child(4), table td:nth-child(4) { width: 150px; text-align: center; } /* Tahun Bergabung */
-        table th:nth-child(5), table td:nth-child(5) { width: 120px; text-align: center; } /* Masa Aktif */
-        table th:nth-child(6), table td:nth-child(6) { width: 100px; text-align: center; } /* Status */
-        table th:nth-child(7), table td:nth-child(7) { width: 120px; text-align: center; } /* QR Code */
-        table th:nth-child(8), table td:nth-child(8) { width: 120px; text-align: center; } /* Aksi */
+                        /* Pengaturan Lebar Kolom Header & Body */
+        /* 1. Pengaturan No (Kolom 1) - Tengah */
+        table th:nth-child(1), table td:nth-child(1) { width: 50px; text-align: center; }
+        
+        /* 2. Pengaturan Nama & UID (Kolom 2) - RATA KIRI */
+        table th:nth-child(2), table td:nth-child(2) { width: 280px; text-align: left; }
+        
+        /* 3. Pengaturan Jabatan (Kolom 3) - Kiri (atau Tengah kalau mau) */
+        table th:nth-child(3), table td:nth-child(3) { width: 180px; text-align: center; }
+        
+        /* 4. Tahun Bergabung (Kolom 4) - Tengah */
+        table th:nth-child(4), table td:nth-child(4) { width: 150px; text-align: center; }
+        
+        /* 5. Masa Aktif (Kolom 5) - Tengah */
+        table th:nth-child(5), table td:nth-child(5) { width: 120px; text-align: center; }
+        
+        /* 6. Status (Kolom 6) - Tengah */
+        table th:nth-child(6), table td:nth-child(6) { width: 100px; text-align: center; }
+        
+        /* 7. QR & Aksi - Tengah */
+        table th:nth-child(7), table td:nth-child(7),
+        table th:nth-child(8), table td:nth-child(8) { text-align: center; }
         
         /* Tambahan biar teks di Header nggak nempel ke atas/bawah */
         th {
@@ -186,6 +199,7 @@
 </script>
 </body>
 </html>
+
 
 
 
