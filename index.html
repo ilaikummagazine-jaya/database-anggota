@@ -89,6 +89,9 @@
     const SHEET_ID = '1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig';
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=data`;
 
+    // 1. INI PENTING: Mendeteksi alamat website lo secara otomatis
+    const currentUrl = window.location.href.split('?')[0];
+
     async function getData() {
         try {
             const res = await fetch(url);
@@ -102,7 +105,6 @@
 
             rows.forEach((row, i) => {
                 const uid = row.c[0] ? String(row.c[0].v).trim() : '';
-                // Skip header atau baris kosong
                 if (uid.toLowerCase().includes("nomor") || uid === "") return;
 
                 const member = {
@@ -133,37 +135,58 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('mainTable').style.display = 'table';
 
-            // Generate QR Codes
+            // 2. GENERATE QR CODE SEBAGAI LINK VERIFIKASI
             memberList.forEach(m => {
+                // Link ini yang bakal bikin HP otomatis buka web & nyari nama
+                const verifLink = `${currentUrl}?search=${encodeURIComponent(m.uid)}`;
+                
                 new QRCode(document.getElementById(m.elID), {
-                    text: m.uid,
-                    width: 80,
-                    height: 80,
+                    text: verifLink, 
+                    width: 90,
+                    height: 90,
                     correctLevel : QRCode.CorrectLevel.H
                 });
             });
+
+            // 3. LOGIKA AUTO-FILTER SAAT SCAN
+            // Jika ada "?search=nomor" di URL, tabel langsung nyaring otomatis
+            const urlParams = new URLSearchParams(window.location.search);
+            const scanQuery = urlParams.get('search');
+            if (scanQuery) {
+                document.getElementById('searchInput').value = scanQuery;
+                filterTable(scanQuery.toLowerCase());
+                
+                // Opsional: Kasih alert kalau ini hasil verifikasi
+                console.log("Verifying Member: " + scanQuery);
+            }
 
         } catch (e) {
             document.getElementById('loading').innerHTML = "Gagal memuat data.";
         }
     }
 
+    // Fungsi Filter Table (dipakai buat search manual & auto-scan)
+    function filterTable(keyword) {
+        const rows = document.querySelectorAll('#memberData tr');
+        rows.forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(keyword) ? '' : 'none';
+        });
+    }
+
     function dl(id, name) {
         const canvas = document.getElementById(id).querySelector('canvas');
         const link = document.createElement('a');
         link.href = canvas.toDataURL("image/png");
-        link.download = `QR_Ilaikum_${name.replace(/\s+/g, '_')}.png`;
+        link.download = `QR_Verif_${name.replace(/\s+/g, '_')}.png`;
         link.click();
     }
 
     document.getElementById('searchInput').addEventListener('input', function(e) {
-        const k = e.target.value.toLowerCase();
-        document.querySelectorAll('#memberData tr').forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(k) ? '' : 'none';
-        });
+        filterTable(e.target.value.toLowerCase());
     });
 
     window.onload = getData;
 </script>
 </body>
 </html>
+
