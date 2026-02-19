@@ -22,10 +22,20 @@
         background: #f9f9f9;
         }
 
-        /* Pastikan kolom Masa Aktif (Kolom ke-5) kembali rata kiri */
-        table th:nth-child(1), 
-        table td:nth-child(1) {
-            text-align: center;
+                /* Pengaturan Lebar Kolom Header & Body */
+        table th:nth-child(1), table td:nth-child(1) { width: 50px; text-align: center; } /* No */
+        table th:nth-child(2), table td:nth-child(2) { width: 250px; }                   /* Nama & UID */
+        table th:nth-child(3), table td:nth-child(3) { width: 180px; }                   /* Jabatan */
+        table th:nth-child(4), table td:nth-child(4) { width: 150px; text-align: center; } /* Tahun Bergabung */
+        table th:nth-child(5), table td:nth-child(5) { width: 120px; text-align: center; } /* Masa Aktif */
+        table th:nth-child(6), table td:nth-child(6) { width: 100px; text-align: center; } /* Status */
+        table th:nth-child(7), table td:nth-child(7) { width: 120px; text-align: center; } /* QR Code */
+        table th:nth-child(8), table td:nth-child(8) { width: 120px; text-align: center; } /* Aksi */
+        
+        /* Tambahan biar teks di Header nggak nempel ke atas/bawah */
+        th {
+            padding: 18px 15px !important;
+            vertical-align: middle;
         }
         
              /* Hanya Tahun Bergabung (Kolom ke-4) yang rata tengah */
@@ -167,6 +177,7 @@
 </script>
 </body>
 </html>
+
 
 
 
