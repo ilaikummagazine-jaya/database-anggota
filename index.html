@@ -4,24 +4,23 @@
     <meta charset="UTF-8">
     <title>Database Anggota Ilaikum Magazine</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-    
     <style>
         :root { --primary: #132C47; --accent: #FFCF00; }
         body { font-family: 'Montserrat', sans-serif; background: #f4f4f4; padding: 20px; color: var(--primary); }
-        .container { max-width: 1100px; margin: auto; }
+        .container { max-width: 1200px; margin: auto; }
         header { background: var(--primary); color: var(--accent); padding: 30px; border-radius: 15px; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .search-box { width: 100%; padding: 15px; margin-bottom: 25px; border: 2px solid var(--primary); border-radius: 8px; font-size: 16px; font-family: 'Montserrat'; box-sizing: border-box; }
         table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
         thead { background: var(--primary); color: var(--accent); }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
         tr:hover { background: #fdf6d8; }
         .status-aktif { color: #2ecc71; font-weight: bold; }
         .status-alumni { color: #95a5a6; }
+        .btn-download { background: #27ae60; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .btn-download:hover { background: #219150; }
         #loading { text-align: center; padding: 40px; font-weight: bold; }
-        .barcode-area { min-width: 150px; text-align: center; }
-        svg { width: 150px; height: auto; }
+        svg { width: 120px; height: auto; display: block; margin: 0 auto; }
     </style>
 </head>
 <body>
@@ -29,7 +28,7 @@
 <div class="container">
     <header>
         <h1 style="margin:0; font-weight: 700;">Database Anggota Ilaikum Magazine</h1>
-        <p style="margin: 10px 0 0; opacity: 0.9;">Selamat Datang Di Pusat Data Anggota Ilaikum Magazine, have a nice day!</p>
+        <p style="margin: 10px 0 0; opacity: 0.9;">Selamat Datang Di Pusat Data Anggota Ilaikum Magazine!</p>
     </header>
 
     <input type="text" id="searchInput" class="search-box" placeholder="Cari Nama atau UID...">
@@ -42,10 +41,11 @@
                 <th>UID</th>
                 <th>Nama Lengkap</th>
                 <th>Jabatan</th>
-                <th>Tahun Bergabung</th>
+                <th>Thn Bergabung</th>
                 <th>Masa Aktif</th>
                 <th>Status</th>
-                <th class="barcode-area">Barcode</th>
+                <th>Barcode</th>
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody id="memberData"></tbody>
@@ -67,62 +67,82 @@
             let html = '';
             let memberList = [];
 
-           rows.forEach((row, index) => {
-                // Tetap skip baris 1 (Header/Judul Kolom)
-               
-               
-            
-                // Ambil data dengan proteksi jika kolom kosong
+            rows.forEach((row, index) => {
+                const uidRaw = row.c[0] ? String(row.c[0].v) : '';
+                if (index === 0 || uidRaw.toUpperCase() === "UID" || uidRaw === "") return;
+
                 const member = {
-                    uid: row.c[0] ? String(row.c[0].v) : '',
+                    uid: uidRaw,
                     elID: "bc-" + index,
                     nama: row.c[1] ? row.c[1].v : '-',
                     jabatan: row.c[2] ? row.c[2].v : '-',
-                    tahunbergabung: row.c[3] ? row.c[3].v : '-',
+                    tahun: row.c[3] ? row.c[3].v : '-',
                     masa: row.c[4] ? row.c[4].v : '-',
                     status: row.c[5] ? row.c[5].v : 'Aktif'
                 };
-            
-                if(member.uid && member.uid !== '') {
-                    memberList.push(member);
-                    html += `
-                        <tr>
-                            <td><strong>${member.uid}</strong></td>
-                            <td>${member.nama}</td>
-                            <td>${member.jabatan}</td>
-                            <td>${member.tahunbergabung}</td>
-                            <td>${member.masa}</td>
-                            <td class="${String(member.status).toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
-                            <td class="barcode-area"><svg id="${member.elID}"></svg></td>
-                        </tr>`;
-                }
+
+                memberList.push(member);
+                html += `
+                    <tr>
+                        <td><strong>${member.uid}</strong></td>
+                        <td>${member.nama}</td>
+                        <td>${member.jabatan}</td>
+                        <td>${member.tahun}</td>
+                        <td>${member.masa}</td>
+                        <td class="${String(member.status).toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
+                        <td style="text-align:center"><svg id="${member.elID}"></svg></td>
+                        <td><button class="btn-download" onclick="downloadBarcode('${member.elID}', '${member.nama}')">Download</button></td>
+                    </tr>`;
             });
 
             document.getElementById('memberData').innerHTML = html;
             document.getElementById('loading').style.display = 'none';
             document.getElementById('mainTable').style.display = 'table';
 
-            // Jeda sebentar biar elemen SVG muncul di layar dulu
             setTimeout(() => {
                 memberList.forEach(m => {
-                    // Pastikan JsBarcode sudah ter-load
-                    if (typeof JsBarcode === "function") {
-                        JsBarcode(`#${m.elID}`, m.uid, {
-                            format: "CODE128",
-                            width: 1.2,
-                            height: 40,
-                            displayValue: true,
-                            fontSize: 10
-                        });
-                    } else {
-                        console.error("Library JsBarcode tidak ditemukan!");
-                    }
+                    JsBarcode(`#${m.elID}`, m.uid, {
+                        format: "CODE128",
+                        width: 1.5,
+                        height: 50,
+                        displayValue: true,
+                        fontSize: 12
+                    });
                 });
             }, 500);
 
         } catch (err) {
-            document.getElementById('loading').innerHTML = "Gagal memuat data. Periksa izin Google Sheets.";
+            document.getElementById('loading').innerHTML = "Error memuat data.";
         }
+    }
+
+    // FUNGSI DOWNLOAD BARCODE SEBAGAI PNG
+    function downloadBarcode(svgId, fileName) {
+        const svg = document.getElementById(svgId);
+        const canvas = document.createElement("canvas");
+        const svgData = new XMLSerializer().serializeToString(svg);
+        const svgBlob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
+        const url = URL.createObjectURL(svgBlob);
+        
+        const img = new Image();
+        img.onload = function() {
+            canvas.width = img.width * 2; // Perbesar resolusi agar tidak pecah
+            canvas.height = img.height * 2;
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "white"; // Background putih
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            
+            const pngUrl = canvas.toDataURL("image/png");
+            const downloadLink = document.createElement("a");
+            downloadLink.href = pngUrl;
+            downloadLink.download = `Barcode_${fileName.replace(/\s+/g, '_')}.png`;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            URL.revokeObjectURL(url);
+        };
+        img.src = url;
     }
 
     document.getElementById('searchInput').addEventListener('input', function(e) {
@@ -137,6 +157,7 @@
 </script>
 </body>
 </html>
+
 
 
 
