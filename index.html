@@ -4,35 +4,23 @@
     <meta charset="UTF-8">
     <title>Database Anggota Ilaikum Magazine</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.5/JsBarcode.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
     <style>
         :root { --primary: #132C47; --accent: #FFCF00; }
         body { font-family: 'Montserrat', sans-serif; background: #f4f4f4; padding: 20px; color: var(--primary); }
         .container { max-width: 1100px; margin: auto; }
         header { background: var(--primary); color: var(--accent); padding: 30px; border-radius: 15px; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        
-        /* SEARCH BAR STYLE */
-        .search-box { 
-            width: 100%; 
-            padding: 15px; 
-            margin-bottom: 25px; 
-            border: 2px solid var(--primary); 
-            border-radius: 8px; 
-            font-size: 16px; 
-            font-family: 'Montserrat';
-            box-sizing: border-box; /* Biar gak luber */
-        }
-
+        .search-box { width: 100%; padding: 15px; margin-bottom: 25px; border: 2px solid var(--primary); border-radius: 8px; font-size: 16px; font-family: 'Montserrat'; box-sizing: border-box; }
         table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
-        thead { background: var(--primary); color: var(--accent); text-transform: uppercase; }
-        th, td { padding: 18px; text-align: left; border-bottom: 1px solid #eee; }
-        tr:hover { background: #fdf6d8; transition: 0.3s; }
+        thead { background: var(--primary); color: var(--accent); }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        tr:hover { background: #fdf6d8; }
         .status-aktif { color: #2ecc71; font-weight: bold; }
         .status-alumni { color: #95a5a6; }
-        
-        /* Barcode Style */
-        svg.barcode { width: 120px; height: auto; }
         #loading { text-align: center; padding: 40px; font-weight: bold; }
+        /* Memastikan area barcode punya ruang */
+        .barcode-area { min-width: 150px; text-align: center; }
+        svg { max-width: 100%; height: auto; }
     </style>
 </head>
 <body>
@@ -40,22 +28,22 @@
 <div class="container">
     <header>
         <h1 style="margin:0; font-weight: 700;">Database Anggota Ilaikum Magazine</h1>
-        <p style="margin: 10px 0 0; opacity: 0.9;">Selamat Datang di Pusat Data Anggota Ilaikum Magazine, Have a nice day!</p>
+        <p style="margin: 10px 0 0; opacity: 0.9;">Pusat Data Anggota & Barcode Generator</p>
     </header>
 
-    <input type="text" id="searchInput" class="search-box" placeholder="Cari berdasarkan Nama, UID, atau Jabatan...">
+    <input type="text" id="searchInput" class="search-box" placeholder="Cari Nama atau UID...">
 
-    <div id="loading">Menghubungkan ke Google Sheets & Membuat Barcode...</div>
+    <div id="loading">Menghubungkan ke Database...</div>
 
     <table id="mainTable" style="display:none;">
         <thead>
             <tr>
-                <th>UID Anggota</th>
+                <th>UID</th>
                 <th>Nama Lengkap</th>
                 <th>Jabatan</th>
                 <th>Masa Aktif</th>
                 <th>Status</th>
-                <th style="text-align:center">Barcode</th>
+                <th class="barcode-area">Barcode</th>
             </tr>
         </thead>
         <tbody id="memberData"></tbody>
@@ -75,70 +63,6 @@
             const rows = json.table.rows;
 
             let html = '';
-            const members = [];
+            let memberList = [];
 
             rows.forEach((row, index) => {
-                // Lewati baris 1 (Header di Sheets)
-                if (index === 0) return; 
-
-                const member = {
-                    id: row.c[0] ? row.c[1] ? row.c[0].v : row.c[0].v : 'N/A', // UID
-                    nama: row.c[1] ? row.c[1].v : '',
-                    jabatan: row.c[2] ? row.c[2].v : '',
-                    masa: row.c[3] ? row.c[3].v : '',
-                    status: row.c[4] ? row.c[4].v : ''
-                };
-                members.push(member);
-
-                html += `
-                    <tr>
-                        <td><strong>${member.id}</strong></td>
-                        <td>${member.nama}</td>
-                        <td>${member.jabatan}</td>
-                        <td>${member.masa}</td>
-                        <td class="${String(member.status).toLowerCase() === 'aktif' ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
-                        <td style="text-align:center"><svg class="barcode" id="bc-${member.id}"></svg></td>
-                    </tr>`;
-            });
-
-            document.getElementById('memberData').innerHTML = html;
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('mainTable').style.display = 'table';
-
-            // GENERATE BARCODE (Dijalankan SETELAH tabel muncul)
-            members.forEach(m => {
-                if(m.id && m.id !== 'N/A') {
-                    try {
-                        JsBarcode(`#bc-${m.id}`, String(m.id), {
-                            format: "CODE128",
-                            width: 1.5,
-                            height: 40,
-                            displayValue: true,
-                            fontSize: 12,
-                            lineColor: "#132C47"
-                        });
-                    } catch (e) {
-                        console.error("Gagal buat barcode ID: " + m.id, e);
-                    }
-                }
-            });
-
-        } catch (err) {
-            document.getElementById('loading').innerHTML = "Gagal memuat data. Pastikan Google Sheets sudah di-Share (Public).";
-        }
-    }
-
-    // FUNGSI SEARCH (Aktifkan pencarian)
-    document.getElementById('searchInput').addEventListener('input', function(e) {
-        const keyword = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('#memberData tr');
-        rows.forEach(row => {
-            const text = row.innerText.toLowerCase();
-            row.style.display = text.includes(keyword) ? '' : 'none';
-        });
-    });
-
-    getData();
-</script>
-</body>
-</html>
