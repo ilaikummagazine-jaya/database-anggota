@@ -68,31 +68,32 @@
             let memberList = [];
 
             rows.forEach((row, index) => {
-                const uidRaw = row.c[0] ? String(row.c[0].v) : '';
-                if (index === 0 || uidRaw.toUpperCase() === "UID" || uidRaw === "") return;
-
+            
+                // Ambil data sesuai urutan kolom A sampai F
                 const member = {
-                    uid: uidRaw,
-                    elID: "bc-" + index,
+                    uid: row.c[0] ? String(row.c[0].v).trim() : '',
                     nama: row.c[1] ? row.c[1].v : '-',
                     jabatan: row.c[2] ? row.c[2].v : '-',
                     tahun: row.c[3] ? row.c[3].v : '-',
                     masa: row.c[4] ? row.c[4].v : '-',
-                    status: row.c[5] ? row.c[5].v : 'Aktif'
+                    status: row.c[5] ? row.c[5].v : 'Aktif',
+                    elID: "bc-" + index
                 };
-
-                memberList.push(member);
-                html += `
-                    <tr>
-                        <td><strong>${member.uid}</strong></td>
-                        <td>${member.nama}</td>
-                        <td>${member.jabatan}</td>
-                        <td>${member.tahun}</td>
-                        <td>${member.masa}</td>
-                        <td class="${String(member.status).toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
-                        <td style="text-align:center"><svg id="${member.elID}"></svg></td>
-                        <td><button class="btn-download" onclick="downloadBarcode('${member.elID}', '${member.nama}')">Download</button></td>
-                    </tr>`;
+            
+                if (member.uid !== '') {
+                    memberList.push(member);
+                    html += `
+                        <tr>
+                            <td><strong>${member.uid}</strong></td>
+                            <td>${member.nama}</td>
+                            <td>${member.jabatan}</td>
+                            <td>${member.tahun}</td>
+                            <td>${member.masa}</td>
+                            <td class="${member.status.toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
+                            <td><svg id="${member.elID}"></svg></td>
+                            <td><button class="btn-download" onclick="dl('${member.elID}', '${member.nama}')">Download</button></td>
+                        </tr>`;
+                }
             });
 
             document.getElementById('memberData').innerHTML = html;
@@ -157,6 +158,7 @@
 </script>
 </body>
 </html>
+
 
 
 
