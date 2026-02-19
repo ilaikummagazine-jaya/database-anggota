@@ -67,24 +67,22 @@
             let html = '';
             let memberList = [];
 
-            rows.forEach((row, index) => {
+           rows.forEach((row, index) => {
+                // Tetap skip baris 1 (Header/Judul Kolom)
                 if (index === 0) return; 
-
-                const fullUID = row.c[0] ? String(row.c[0].v) : '';
-                // Buat ID elemen yang bersih dari simbol / atau spasi
-                const safeElementID = "bc-" + index; 
-
+            
+                // Ambil data dengan proteksi jika kolom kosong
                 const member = {
-                    uid: fullUID,
-                    elID: safeElementID,
-                    nama: row.c[1] ? row.c[1].v : '',
-                    jabatan: row.c[2] ? row.c[2].v : '',
-                    tahunbergabung: row.c[3] ? row.c[3].v : '',
-                    masa: row.c[4] ? row.c[4].v : '',
-                    status: row.c[5] ? row.c[5].v : ''
+                    uid: row.c[0] ? String(row.c[0].v) : '',
+                    elID: "bc-" + index,
+                    nama: row.c[1] ? row.c[1].v : '-',
+                    jabatan: row.c[2] ? row.c[2].v : '-',
+                    tahunbergabung: row.c[3] ? row.c[3].v : '-',
+                    masa: row.c[4] ? row.c[4].v : '-',
+                    status: row.c[5] ? row.c[5].v : 'Aktif'
                 };
-
-                if(member.uid) {
+            
+                if(member.uid && member.uid !== '') {
                     memberList.push(member);
                     html += `
                         <tr>
@@ -93,7 +91,7 @@
                             <td>${member.jabatan}</td>
                             <td>${member.tahunbergabung}</td>
                             <td>${member.masa}</td>
-                            <td class="${String(member.status).toLowerCase() === 'aktif' ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
+                            <td class="${String(member.status).toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
                             <td class="barcode-area"><svg id="${member.elID}"></svg></td>
                         </tr>`;
                 }
@@ -138,5 +136,6 @@
 </script>
 </body>
 </html>
+
 
 
