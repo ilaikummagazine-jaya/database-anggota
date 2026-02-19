@@ -4,53 +4,85 @@
     <meta charset="UTF-8">
     <title>Database Anggota Ilaikum Magazine</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    
     <style>
-        :root { --primary: #132C47; --accent: #FFCF00; }
-        body { font-family: 'Montserrat', sans-serif; background: #f4f4f4; padding: 20px; color: var(--primary); }
-        .container { max-width: 1200px; margin: auto; }
-        header { background: var(--primary); color: var(--accent); padding: 30px; border-radius: 15px; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .search-box { width: 100%; padding: 15px; margin-bottom: 25px; border: 2px solid var(--primary); border-radius: 8px; font-size: 16px; width: 100%; box-sizing: border-box; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
-        thead { background: var(--primary); color: var(--accent); }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        tr:hover { background: #fdf6d8; }
-        .status-aktif { color: #2ecc71; font-weight: bold; }
-        .status-alumni { color: #95a5a6; }
-        .btn-download { background: #27ae60; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .qr-container { display: flex; justify-content: center; padding: 5px; }
-        #loading { text-align: center; padding: 40px; font-weight: bold; }
-        canvas { display: none; } /* Tersembunyi, hanya untuk proses download */
+        :root { --primary: #132C47; --accent: #FFCF00; --bg: #f4f7f6; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
+        
+        .hero { 
+            background: linear-gradient(135deg, #132c47 0%, #1e4571 100%);
+            color: white; padding: 50px 20px; text-align: left;
+            padding-left: 10%;
+        }
+        .hero h1 { margin: 0; font-size: 2.2em; color: var(--accent); letter-spacing: 1px; }
+        .hero p { margin: 10px 0; opacity: 0.8; }
+
+        .container { max-width: 1200px; margin: -30px auto 40px; padding: 0 20px; }
+        
+        .search-box { 
+            width: 100%; padding: 18px; border: none; border-radius: 8px; 
+            font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); outline: none;
+            font-family: 'Montserrat';
+        }
+
+        .table-wrapper { 
+            background: white; border-radius: 10px; overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 25px;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: #132c47; color: white; }
+        th { padding: 15px; text-align: left; font-size: 13px; text-transform: uppercase; }
+        td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; vertical-align: middle; }
+        tr:hover { background: #f9f9f9; }
+
+        .status-aktif { color: #2ecc71; font-weight: bold; text-transform: lowercase; }
+        
+        .btn-download { 
+            background: #ffcf00; color: #132c47; border: none; 
+            padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; 
+            transition: 0.3s;
+        }
+        .btn-download:hover { background: #e6bb00; }
+
+        .qr-box { 
+            background: #fff; border: 1px solid #eee; padding: 5px; 
+            display: inline-block; border-radius: 4px;
+        }
+
+        #loading { text-align: center; padding: 50px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1 style="margin:0; font-weight: 700;">Database Anggota Ilaikum Magazine</h1>
-        <p style="margin: 10px 0 0; opacity: 0.9;">Scan QR Code untuk verifikasi kartu pers anggota.</p>
-    </header>
+<div class="hero">
+    <p style="color:var(--accent); margin-bottom:5px; font-weight:bold;">Pimpinan</p>
+    <h1>Database Anggota Ilaikum Magazine</h1>
+    <p>Cari Nama atau Database verifikasi kartu pers anggota...</p>
+</div>
 
-    <input type="text" id="searchInput" class="search-box" placeholder="Cari Nama atau Nomor Anggota...">
+<div class="container">
+    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Cari Nama atau Nomor Anggota...">
 
     <div id="loading">Menghubungkan ke Database...</div>
 
-    <table id="mainTable" style="display:none;">
-        <thead>
-            <tr>
-                <th>Nomor Anggota</th>
-                <th>Nama Lengkap</th>
-                <th>Jabatan</th>
-                <th>Tahun</th>
-                <th>Status</th>
-                <th style="text-align:center;">QR Code</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody id="memberData"></tbody>
-    </table>
+    <div class="table-wrapper">
+        <table id="mainTable" style="display:none;">
+            <thead>
+                <tr>
+                    <th>Th</th>
+                    <th>Nomor Anggota</th>
+                    <th>Jabatan</th>
+                    <th>Jalur Aktif</th>
+                    <th>Tahun</th>
+                    <th>Status</th>
+                    <th style="text-align:center;">QR Code</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="memberData"></tbody>
+        </table>
+    </div>
 </div>
 
 <script>
@@ -59,39 +91,41 @@
 
     async function getData() {
         try {
-            const response = await fetch(url);
-            const text = await response.text();
+            const res = await fetch(url);
+            const text = await res.text();
             const json = JSON.parse(text.substring(47).slice(0, -2));
             const rows = json.table.rows;
 
             let html = '';
             let memberList = [];
+            let noUrut = 1;
 
-            rows.forEach((row, index) => {
+            rows.forEach((row, i) => {
                 const uid = row.c[0] ? String(row.c[0].v).trim() : '';
-                
-                // Lewati baris judul atau baris kosong
+                // Skip header atau baris kosong
                 if (uid.toLowerCase().includes("nomor") || uid === "") return;
 
                 const member = {
+                    no: noUrut++,
                     uid: uid,
                     nama: row.c[1] ? row.c[1].v : '-',
-                    jabatan: row.c[2] ? row.c[2].v : '-',
-                    tahun: row.c[3] ? row.c[3].v : '-',
-                    status: row.c[5] ? row.c[5].v : 'Aktif',
-                    elID: "qr-" + index
+                    jab: row.c[2] ? row.c[2].v : '-',
+                    thn: row.c[3] ? row.c[3].v : '-',
+                    stat: row.c[5] ? row.c[5].v : 'Aktif',
+                    elID: "qr-" + i
                 };
 
                 memberList.push(member);
                 html += `
                     <tr>
-                        <td><strong>${member.uid}</strong></td>
-                        <td>${member.nama}</td>
-                        <td>${member.jabatan}</td>
-                        <td>${member.tahun}</td>
-                        <td class="${String(member.status).toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
-                        <td><div id="${member.elID}" class="qr-container"></div></td>
-                        <td><button class="btn-download" onclick="downloadQR('${member.elID}', '${member.nama}')">Download</button></td>
+                        <td style="color:#999;">${member.no}</td>
+                        <td><strong>${member.uid}</strong><br><small style="color:#555">${member.nama}</small></td>
+                        <td>${member.jab}</td>
+                        <td><span class="status-aktif">aktif</span></td>
+                        <td>${member.thn}</td>
+                        <td>${member.stat}</td>
+                        <td align="center"><div class="qr-box" id="${member.elID}"></div></td>
+                        <td><button class="btn-download" onclick="dl('${member.elID}', '${member.nama}')">Download</button></td>
                     </tr>`;
             });
 
@@ -99,48 +133,33 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('mainTable').style.display = 'table';
 
-            // Generate QR Code Persegi
+            // Generate QR Codes
             memberList.forEach(m => {
                 new QRCode(document.getElementById(m.elID), {
                     text: m.uid,
                     width: 80,
                     height: 80,
-                    colorDark : "#000000",
-                    colorLight : "#ffffff",
                     correctLevel : QRCode.CorrectLevel.H
                 });
             });
 
-        } catch (err) {
-            document.getElementById('loading').innerHTML = "Gagal memuat data. Pastikan Spreadsheet dishare ke 'Anyone with the link'.";
+        } catch (e) {
+            document.getElementById('loading').innerHTML = "Gagal memuat data.";
         }
     }
 
-    // Fungsi Download QR Code sebagai PNG (Kualitas Tinggi)
-    function downloadQR(divId, fileName) {
-        const qrDiv = document.getElementById(divId);
-        const img = qrDiv.querySelector('img');
-        
-        if (img) {
-            const link = document.createElement('a');
-            link.href = img.src;
-            link.download = `QR_Ilaikum_${fileName.replace(/\s+/g, '_')}.png`;
-            link.click();
-        } else {
-            // Jika img belum siap, ambil dari canvas
-            const canvas = qrDiv.querySelector('canvas');
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL("image/png");
-            link.download = `QR_Ilaikum_${fileName.replace(/\s+/g, '_')}.png`;
-            link.click();
-        }
+    function dl(id, name) {
+        const canvas = document.getElementById(id).querySelector('canvas');
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL("image/png");
+        link.download = `QR_Ilaikum_${name.replace(/\s+/g, '_')}.png`;
+        link.click();
     }
 
-    // Fungsi Search
     document.getElementById('searchInput').addEventListener('input', function(e) {
-        const keyword = e.target.value.toLowerCase();
+        const k = e.target.value.toLowerCase();
         document.querySelectorAll('#memberData tr').forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(keyword) ? '' : 'none';
+            row.style.display = row.innerText.toLowerCase().includes(k) ? '' : 'none';
         });
     });
 
