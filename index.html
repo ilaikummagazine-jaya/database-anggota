@@ -8,50 +8,22 @@
     <style>
         :root { --primary: #132C47; --accent: #FFCF00; --bg: #f4f7f6; }
         body { font-family: 'Montserrat', sans-serif; background: var(--bg); margin: 0; padding: 0; color: #333; }
-        
-        .hero { 
-            background: linear-gradient(135deg, #132c47 0%, #1e4571 100%);
-            color: white; padding: 50px 20px; text-align: left;
-            padding-left: 10%;
-        }
+        .hero { background: linear-gradient(135deg, #132c47 0%, #1e4571 100%); color: white; padding: 50px 20px; text-align: left; padding-left: 10%; }
         .hero h1 { margin: 0; font-size: 2.2em; color: var(--accent); letter-spacing: 1px; }
         .hero p { margin: 10px 0; opacity: 0.8; }
-
         .container { max-width: 1200px; margin: -30px auto 40px; padding: 0 20px; }
-        
-        .search-box { 
-            width: 100%; padding: 18px; border: none; border-radius: 8px; 
-            font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); outline: none;
-            font-family: 'Montserrat';
-        }
-
-        .table-wrapper { 
-            background: white; border-radius: 10px; overflow: hidden; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 25px;
-        }
-
-        table { width: 100%; border-collapse: collapse; }
+        .search-box { width: 100%; padding: 18px; border: none; border-radius: 8px; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); outline: none; }
+        .table-wrapper { background: white; border-radius: 10px; overflow-x: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 25px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
         thead { background: #132c47; color: white; }
-        th { padding: 15px; text-align: left; font-size: 13px; text-transform: uppercase; }
+        th { padding: 15px; text-align: left; font-size: 13px; text-transform: uppercase; white-space: nowrap; }
         td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; vertical-align: middle; }
         tr:hover { background: #f9f9f9; }
-
         .status-tag { padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 12px; }
         .status-aktif { background: #e8f5e9; color: #2ecc71; }
         .status-alumni { background: #f5f5f5; color: #95a5a6; }
-        
-        .btn-download { 
-            background: #ffcf00; color: #132c47; border: none; 
-            padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; 
-            transition: 0.3s;
-        }
-        .btn-download:hover { background: #e6bb00; }
-
-        .qr-box { 
-            background: #fff; border: 1px solid #eee; padding: 5px; 
-            display: inline-block; border-radius: 4px;
-        }
-
+        .btn-download { background: #ffcf00; color: #132c47; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .qr-box { background: #fff; border: 1px solid #eee; padding: 5px; display: inline-block; border-radius: 4px; }
         #loading { text-align: center; padding: 50px; font-weight: bold; }
     </style>
 </head>
@@ -60,14 +32,12 @@
 <div class="hero">
     <p style="color:var(--accent); margin-bottom:10px; font-weight:bold;">Selamat Datang!</p>
     <h1>Pusat Database Anggota Ilaikum Magazine</h1>
-    <p>Cari nama atau database verifikasi kartu pers anggota...</p>
+    <p>Verifikasi kartu pers anggota melalui sistem cloud...</p>
 </div>
 
 <div class="container">
     <input type="text" id="searchInput" class="search-box" placeholder="🔍 Cari Nama atau Nomor Anggota...">
-
     <div id="loading">Menghubungkan ke Database...</div>
-
     <div class="table-wrapper">
         <table id="mainTable" style="display:none;">
             <thead>
@@ -75,7 +45,7 @@
                     <th>No</th>
                     <th>Nama & UID</th>
                     <th>Jabatan</th>
-                    <th>Thn Bergabung</th>
+                    <th>Tahun Bergabung</th>
                     <th>Masa Aktif</th>
                     <th>Status</th>
                     <th style="text-align:center;">QR Code</th>
@@ -90,7 +60,6 @@
 <script>
     const SHEET_ID = '1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig';
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=data`;
-
     const currentUrl = window.location.href.split('?')[0];
 
     async function getData() {
@@ -99,16 +68,15 @@
             const text = await res.text();
             const json = JSON.parse(text.substring(47).slice(0, -2));
             const rows = json.table.rows;
-
             let html = '';
             let memberList = [];
             let noUrut = 1;
 
             rows.forEach((row, i) => {
                 const uid = row.c[0] ? String(row.c[0].v).trim() : '';
-                
                 if (uid.toLowerCase().includes("nomor") || uid === "") return;
 
+                // Pastikan urutan indeks kolom sesuai: A=0, B=1, C=2, D=3, E=4, F=5
                 const member = {
                     no: noUrut++,
                     uid: uid,
@@ -121,8 +89,6 @@
                 };
 
                 memberList.push(member);
-
-                // Logika warna status
                 const statusClass = String(member.stat).toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni';
 
                 html += `
@@ -146,8 +112,7 @@
                 const verifLink = `${currentUrl}?search=${encodeURIComponent(m.uid)}`;
                 new QRCode(document.getElementById(m.elID), {
                     text: verifLink, 
-                    width: 90,
-                    height: 90,
+                    width: 90, height: 90,
                     correctLevel : QRCode.CorrectLevel.H
                 });
             });
@@ -158,15 +123,11 @@
                 document.getElementById('searchInput').value = scanQuery;
                 filterTable(scanQuery.toLowerCase());
             }
-
-        } catch (e) {
-            document.getElementById('loading').innerHTML = "Gagal sinkronisasi dengan Google Sheets.";
-        }
+        } catch (e) { document.getElementById('loading').innerHTML = "Gagal memuat data."; }
     }
 
     function filterTable(keyword) {
-        const rows = document.querySelectorAll('#memberData tr');
-        rows.forEach(row => {
+        document.querySelectorAll('#memberData tr').forEach(row => {
             row.style.display = row.innerText.toLowerCase().includes(keyword) ? '' : 'none';
         });
     }
@@ -176,14 +137,11 @@
         if(!canvas) return;
         const link = document.createElement('a');
         link.href = canvas.toDataURL("image/png");
-        link.download = `QR_Verifikasi_${name.replace(/\s+/g, '_')}.png`;
+        link.download = `QR_Verif_${name.replace(/\s+/g, '_')}.png`;
         link.click();
     }
 
-    document.getElementById('searchInput').addEventListener('input', function(e) {
-        filterTable(e.target.value.toLowerCase());
-    });
-
+    document.getElementById('searchInput').addEventListener('input', (e) => filterTable(e.target.value.toLowerCase()));
     window.onload = getData;
 </script>
 </body>
