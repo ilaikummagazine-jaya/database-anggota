@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <title>Database Anggota Ilaikum Magazine</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    
     <style>
         :root { --primary: #132C47; --accent: #FFCF00; }
         body { font-family: 'Montserrat', sans-serif; background: #f4f4f4; padding: 20px; color: var(--primary); }
@@ -18,9 +20,8 @@
         .status-aktif { color: #2ecc71; font-weight: bold; }
         .status-alumni { color: #95a5a6; }
         #loading { text-align: center; padding: 40px; font-weight: bold; }
-        /* Memastikan area barcode punya ruang */
         .barcode-area { min-width: 150px; text-align: center; }
-        svg { max-width: 100%; height: auto; }
+        svg { width: 150px; height: auto; }
     </style>
 </head>
 <body>
@@ -66,3 +67,71 @@
             let memberList = [];
 
             rows.forEach((row, index) => {
+                if (index === 0) return; 
+
+                const fullUID = row.c[0] ? String(row.c[0].v) : '';
+                // Buat ID elemen yang bersih dari simbol / atau spasi
+                const safeElementID = "bc-" + index; 
+
+                const member = {
+                    uid: fullUID,
+                    elID: safeElementID,
+                    nama: row.c[1] ? row.c[1].v : '',
+                    jabatan: row.c[2] ? row.c[2].v : '',
+                    masa: row.c[3] ? row.c[3].v : '',
+                    status: row.c[4] ? row.c[4].v : ''
+                };
+
+                if(member.uid) {
+                    memberList.push(member);
+                    html += `
+                        <tr>
+                            <td><strong>${member.uid}</strong></td>
+                            <td>${member.nama}</td>
+                            <td>${member.jabatan}</td>
+                            <td>${member.masa}</td>
+                            <td class="${String(member.status).toLowerCase() === 'aktif' ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
+                            <td class="barcode-area"><svg id="${member.elID}"></svg></td>
+                        </tr>`;
+                }
+            });
+
+            document.getElementById('memberData').innerHTML = html;
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('mainTable').style.display = 'table';
+
+            // Jeda sebentar biar elemen SVG muncul di layar dulu
+            setTimeout(() => {
+                memberList.forEach(m => {
+                    // Pastikan JsBarcode sudah ter-load
+                    if (typeof JsBarcode === "function") {
+                        JsBarcode(`#${m.elID}`, m.uid, {
+                            format: "CODE128",
+                            width: 1.2,
+                            height: 40,
+                            displayValue: true,
+                            fontSize: 10
+                        });
+                    } else {
+                        console.error("Library JsBarcode tidak ditemukan!");
+                    }
+                });
+            }, 500);
+
+        } catch (err) {
+            document.getElementById('loading').innerHTML = "Gagal memuat data. Periksa izin Google Sheets.";
+        }
+    }
+
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const keyword = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('#memberData tr');
+        rows.forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(keyword) ? '' : 'none';
+        });
+    });
+
+    window.onload = getData;
+</script>
+</body>
+</html>
