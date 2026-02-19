@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Database Anggota Redaksi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <style>
+        :root { --primary: #132C47; --accent: #FFCF00; }
+        body { font-family: 'Montserrat', sans-serif; background: #f4f4f4; padding: 20px; color: var(--primary); }
+        .container { max-width: 1100px; margin: auto; }
+        header { background: var(--primary); color: var(--accent); padding: 30px; border-radius: 15px; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .search-box { width: 100%; padding: 15px; margin-bottom: 25px; border: 2px solid var(--primary); border-radius: 8px; font-size: 16px; font-family: 'Montserrat'; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+        thead { background: var(--primary); color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+        th, td { padding: 18px; text-align: left; border-bottom: 1px solid #eee; }
+        tr:hover { background: #fdf6d8; transition: 0.3s; }
+        .status-aktif { color: #2ecc71; font-weight: bold; }
+        .status-alumni { color: #95a5a6; }
+        canvas { max-width: 120px; }
+        #loading { text-align: center; padding: 40px; font-weight: bold; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1 style="margin:0; font-weight: 700;">Database Anggota Ilaikum Magazine</h1>
+        <p style="margin: 10px 0 0; opacity: 0.9;">Selamat Datang di Pusat Data Anggota Ilaikum Magazine, have a nice day!</p>
+    </header>
+
+    <input type="text" id="searchInput" class="search-box" placeholder="Cari berdasarkan Nama atau ID Anggota...">
+
+    <div id="loading">Menghubungkan ke Google Sheets...</div>
+
+    <table id="mainTable" style="display:none;">
+        <thead>
+            <tr>
+                <th>UID Anggota</th>
+                <th>Nama Lengkap</th>
+                <th>Jabatan</th>
+                <th>Masa Aktif</th>
+                <th>Status</th>
+                <th>Barcode</th>
+            </tr>
+        </thead>
+        <tbody id="memberData"></tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script>
+    // SESUAIKAN DENGAN PUNYA KAMU
+    const SHEET_ID = '1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig';
+    const SHEET_NAME = 'data';
+
+    // Link URL khusus untuk menarik data JSON dari Google Sheets
+    const url = `https://docs.google.com/spreadsheets/d/1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig/gviz/tq?tqx=out:json&sheet=data`;
+
+    async function getData() {
+        try {
+            const response = await fetch(url);
+            const text = await response.text();
+            // Membersihkan data mentah dari Google agar bisa dibaca website
+            const json = JSON.parse(text.substring(47).slice(0, -2));
+            const rows = json.table.rows;
+
+            let html = '';
+            const members = [];
+
+            rows.forEach((row, index) => {
+                // Lewati baris judul (ID, Nama, dll)
+                if (index === 0) return;
+
+                const member = {
+                    id: row.c[0] ? row.c[0].v : '',
+                    nama: row.c[1] ? row.c[1].v : '',
+                    jabatan: row.c[2] ? row.c[2].v : '',
+                    masa: row.c[3] ? row.c[3].v : '',
+                    status: row.c[4] ? row.c[4].v : ''
+                };
+                members.push(member);
+
+                html += `
+                    <tr>
+                        <td><strong>${member.id}</strong></td>
+                        <td>${member.nama}</td>
+                        <td>${member.jabatan}</td>
+                        <td>${member.masa}</td>
+                        <td class="${member.status.toLowerCase() === 'aktif' ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
+                        <td><canvas id="bc-${member.id}"></canvas></td>
+                    </tr>`;
+            });
+
+            document.getElementById('memberData').innerHTML = html;
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('mainTable').style.display = 'table';
+
+            // Membuat Barcode otomatis
+            members.forEach(m => {
+                if(m.id) {
+                    JsBarcode(`#bc-${m.id}`, m.id, {
+                        format: "CODE128",
+                        width: 1.5, height: 40,
+                        displayValue: false, lineColor: "#132C47"
+                    });
+                }
+            });
+        } catch (err) {
+            document.getElementById('loading').innerHTML = "Gagal memuat data. Cek akses Share Google Sheets kamu.";
+        }
+    }
+    getData();
+</script>
+</body>
+</html>
