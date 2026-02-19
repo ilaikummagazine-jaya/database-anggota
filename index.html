@@ -91,4 +91,100 @@
     const SHEET_ID = '1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig';
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=data`;
 
-    const currentUrl = window.
+    const currentUrl = window.location.href.split('?')[0];
+
+    async function getData() {
+        try {
+            const res = await fetch(url);
+            const text = await res.text();
+            const json = JSON.parse(text.substring(47).slice(0, -2));
+            const rows = json.table.rows;
+
+            let html = '';
+            let memberList = [];
+            let noUrut = 1;
+
+            rows.forEach((row, i) => {
+                const uid = row.c[0] ? String(row.c[0].v).trim() : '';
+                
+                if (uid.toLowerCase().includes("nomor") || uid === "") return;
+
+                const member = {
+                    no: noUrut++,
+                    uid: uid,
+                    nama: row.c[1] ? row.c[1].v : '-',
+                    jab: row.c[2] ? row.c[2].v : '-',
+                    thn: row.c[3] ? row.c[3].v : '-',
+                    masa: row.c[4] ? row.c[4].v : '-',
+                    stat: row.c[5] ? row.c[5].v : 'Aktif',
+                    elID: "qr-" + i
+                };
+
+                memberList.push(member);
+
+                // Logika warna status
+                const statusClass = String(member.stat).toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni';
+
+                html += `
+                    <tr>
+                        <td style="color:#999;">${member.no}</td>
+                        <td><strong>${member.uid}</strong><br><small style="color:#555">${member.nama}</small></td>
+                        <td>${member.jab}</td>
+                        <td>${member.thn}</td>
+                        <td>${member.masa}</td>
+                        <td><span class="status-tag ${statusClass}">${member.stat}</span></td>
+                        <td align="center"><div class="qr-box" id="${member.elID}"></div></td>
+                        <td><button class="btn-download" onclick="dl('${member.elID}', '${member.nama}')">Unduh</button></td>
+                    </tr>`;
+            });
+
+            document.getElementById('memberData').innerHTML = html;
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('mainTable').style.display = 'table';
+
+            memberList.forEach(m => {
+                const verifLink = `${currentUrl}?search=${encodeURIComponent(m.uid)}`;
+                new QRCode(document.getElementById(m.elID), {
+                    text: verifLink, 
+                    width: 90,
+                    height: 90,
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+            });
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const scanQuery = urlParams.get('search');
+            if (scanQuery) {
+                document.getElementById('searchInput').value = scanQuery;
+                filterTable(scanQuery.toLowerCase());
+            }
+
+        } catch (e) {
+            document.getElementById('loading').innerHTML = "Gagal sinkronisasi dengan Google Sheets.";
+        }
+    }
+
+    function filterTable(keyword) {
+        const rows = document.querySelectorAll('#memberData tr');
+        rows.forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(keyword) ? '' : 'none';
+        });
+    }
+
+    function dl(id, name) {
+        const canvas = document.getElementById(id).querySelector('canvas');
+        if(!canvas) return;
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL("image/png");
+        link.download = `QR_Verifikasi_${name.replace(/\s+/g, '_')}.png`;
+        link.click();
+    }
+
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        filterTable(e.target.value.toLowerCase());
+    });
+
+    window.onload = getData;
+</script>
+</body>
+</html>
