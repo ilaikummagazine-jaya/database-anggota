@@ -25,8 +25,8 @@
 
 <div class="container">
     <header>
-        <h1 style="margin:0; font-weight: 700;">MAJALAH REMAJA ISLAM</h1>
-        <p style="margin: 10px 0 0; opacity: 0.9;">Buku Induk Anggota & Database Barcode</p>
+        <h1 style="margin:0; font-weight: 700;">Database Anggota Ilaikum Magazine</h1>
+        <p style="margin: 10px 0 0; opacity: 0.9;">Selamat Datang di Pusat Data Anggota Ilaikum Magazine, have a nice day!</p>
     </header>
 
     <input type="text" id="searchInput" class="search-box" placeholder="Cari berdasarkan Nama atau ID Anggota...">
@@ -36,7 +36,7 @@
     <table id="mainTable" style="display:none;">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>UID Anggota</th>
                 <th>Nama Lengkap</th>
                 <th>Jabatan</th>
                 <th>Masa Aktif</th>
@@ -48,36 +48,36 @@
     </table>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <script>
-    // ==========================================
-    // ISI BAGIAN INI SAJA
-    // ==========================================
-    const SHEET_ID = '1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig'; // Ganti dengan ID dari link browser
-    const SHEET_NAME = 'data'; // Ganti jika nama tab di Sheets kamu bukan Sheet1
-    // ==========================================
+    // SESUAIKAN DENGAN PUNYA KAMU
+    const SHEET_ID = '1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig';
+    const SHEET_NAME = 'data';
 
+    // Link URL khusus untuk menarik data JSON dari Google Sheets
     const url = `https://docs.google.com/spreadsheets/d/1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig/gviz/tq?tqx=out:json&sheet=data`;
 
     async function getData() {
         try {
             const response = await fetch(url);
-            const data = await response.text();
-            const json = JSON.parse(data.substring(47).slice(0, -2));
+            const text = await response.text();
+            // Membersihkan data mentah dari Google agar bisa dibaca website
+            const json = JSON.parse(text.substring(47).slice(0, -2));
             const rows = json.table.rows;
 
             let html = '';
             const members = [];
 
             rows.forEach((row, index) => {
-                // Lewati baris pertama jika itu adalah judul kolom
-                if(index === 0 && row.c[0]?.v === "ID") return;
+                // Lewati baris judul (ID, Nama, dll)
+                if (index === 0) return;
 
                 const member = {
-                    id: row.c[0]?.v || '',
-                    nama: row.c[1]?.v || '',
-                    jabatan: row.c[2]?.v || '',
-                    masa: row.c[3]?.v || '',
-                    status: row.c[4]?.v || ''
+                    id: row.c[0] ? row.c[0].v : '',
+                    nama: row.c[1] ? row.c[1].v : '',
+                    jabatan: row.c[2] ? row.c[2].v : '',
+                    masa: row.c[3] ? row.c[3].v : '',
+                    status: row.c[4] ? row.c[4].v : ''
                 };
                 members.push(member);
 
@@ -89,42 +89,27 @@
                         <td>${member.masa}</td>
                         <td class="${member.status.toLowerCase() === 'aktif' ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
                         <td><canvas id="bc-${member.id}"></canvas></td>
-                    </tr>
-                `;
+                    </tr>`;
             });
 
             document.getElementById('memberData').innerHTML = html;
             document.getElementById('loading').style.display = 'none';
             document.getElementById('mainTable').style.display = 'table';
 
-            // Generate Barcodes
+            // Membuat Barcode otomatis
             members.forEach(m => {
-                JsBarcode(`#bc-${m.id}`, m.id, {
-                    format: "CODE128",
-                    width: 1.5,
-                    height: 40,
-                    displayValue: false,
-                    lineColor: "#132C47"
-                });
+                if(m.id) {
+                    JsBarcode(`#bc-${m.id}`, m.id, {
+                        format: "CODE128",
+                        width: 1.5, height: 40,
+                        displayValue: false, lineColor: "#132C47"
+                    });
+                }
             });
-
-            window.dataAnggota = members;
         } catch (err) {
-            document.getElementById('loading').innerHTML = `<span style="color:red">Gagal Memuat Data!</span><br>Pastikan:<br>1. ID Sheet Benar<br>2. Google Sheet sudah di-Share (Anyone with the link can view)`;
-            console.error(err);
+            document.getElementById('loading').innerHTML = "Gagal memuat data. Cek akses Share Google Sheets kamu.";
         }
     }
-
-    // Fungsi Cari
-    document.getElementById('searchInput').addEventListener('input', function(e) {
-        const keyword = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('#memberData tr');
-        rows.forEach(row => {
-            const text = row.innerText.toLowerCase();
-            row.style.display = text.includes(keyword) ? '' : 'none';
-        });
-    });
-
     getData();
 </script>
 </body>
