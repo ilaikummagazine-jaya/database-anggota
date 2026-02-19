@@ -50,18 +50,16 @@
 
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <script>
-    // SESUAIKAN DENGAN PUNYA KAMU
     const SHEET_ID = '1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig';
     const SHEET_NAME = 'data';
-
-    // Link URL khusus untuk menarik data JSON dari Google Sheets
-    const url = `https://docs.google.com/spreadsheets/d/1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig/gviz/tq?tqx=out:json&sheet=data`;
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
 
     async function getData() {
         try {
             const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok');
+            
             const text = await response.text();
-            // Membersihkan data mentah dari Google agar bisa dibaca website
             const json = JSON.parse(text.substring(47).slice(0, -2));
             const rows = json.table.rows;
 
@@ -69,8 +67,9 @@
             const members = [];
 
             rows.forEach((row, index) => {
-                // Lewati baris judul (ID, Nama, dll)
-                if (index === 0) return;
+                // Pastikan baris 1 di Google Sheets adalah Judul: UID, Nama, Jabatan, dll.
+                // Data Pimred mulai di Baris 2.
+                if (index === 0) return; 
 
                 const member = {
                     id: row.c[0] ? row.c[0].v : '',
@@ -87,8 +86,8 @@
                         <td>${member.nama}</td>
                         <td>${member.jabatan}</td>
                         <td>${member.masa}</td>
-                        <td class="${member.status.toLowerCase() === 'aktif' ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
-                        <td><canvas id="bc-${member.id}"></canvas></td>
+                        <td class="${String(member.status).toLowerCase() === 'aktif' ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
+                        <td><svg class="barcode-item" id="barcode-${member.id}"></svg></td>
                     </tr>`;
             });
 
@@ -96,21 +95,42 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('mainTable').style.display = 'table';
 
-            // Membuat Barcode otomatis
+            // GENERATE BARCODE (Dijalankan setelah tabel muncul)
             members.forEach(m => {
                 if(m.id) {
-                    JsBarcode(`#bc-${m.id}`, m.id, {
-                        format: "CODE128",
-                        width: 1.5, height: 40,
-                        displayValue: false, lineColor: "#132C47"
-                    });
+                    try {
+                        JsBarcode(`#barcode-${m.id}`, String(m.id), {
+                            format: "CODE128",
+                            width: 1.5,
+                            height: 40,
+                            displayValue: true, // Biar UID muncul di bawah barcode
+                            fontSize: 12,
+                            lineColor: "#132C47"
+                        });
+                    } catch (e) {
+                        console.error("Barcode gagal buat ID: " + m.id);
+                    }
                 }
             });
+
         } catch (err) {
-            document.getElementById('loading').innerHTML = "Gagal memuat data. Cek akses Share Google Sheets kamu.";
+            console.error(err);
+            document.getElementById('loading').innerHTML = `<span style="color:red">Error: ${err.message}</span><br>Cek ID Spreadsheet dan pastikan akses "Anyone with the link".`;
         }
     }
+
+    // Fungsi Cari
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const keyword = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('#memberData tr');
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(keyword) ? '' : 'none';
+        });
+    });
+
     getData();
 </script>
 </body>
+
 </html>
