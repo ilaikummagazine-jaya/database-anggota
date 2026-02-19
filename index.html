@@ -43,4 +43,173 @@
         }
         @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        .modal-header { background: linear
+        .modal-header { background: linear-gradient(135deg, #132c47 0%, #1e4571 100%); padding: 40px 20px; text-align: center; color: white; }
+        .profile-img { 
+            width: 120px; height: 120px; border-radius: 50%; border: 5px solid var(--accent); 
+            margin-top: -60px; background: #eee; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .modal-body { padding: 20px 30px 30px; text-align: center; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+        .info-box { background: #f8f9fa; padding: 10px; border-radius: 10px; text-align: left; }
+        .info-box span { font-size: 10px; color: #888; text-transform: uppercase; display: block; }
+        .info-box strong { font-size: 13px; color: #132c47; }
+
+        .rekam-jejak-box { background: #fff8e1; padding: 15px; border-radius: 12px; border-left: 4px solid var(--accent); text-align: left; margin-top: 15px; font-size: 13px; line-height: 1.5; }
+        .close-btn { position: absolute; right: 20px; top: 15px; font-size: 30px; color: white; cursor: pointer; font-weight: bold; }
+
+        .btn-download { background: #ffcf00; color: #132c47; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <p style="color:var(--accent); font-weight:bold; margin-bottom:5px;">Selamat Datang!</p>
+    <h1>Pusat Database Anggota Ilaikum Magazine</h1>
+</div>
+
+<div class="container">
+    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Cari Nama atau UID Anggota...">
+    <div id="loading" style="text-align:center; padding:50px;">Menghubungkan ke Cloud...</div>
+
+    <div class="table-wrapper">
+        <table id="mainTable" style="display:none;">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama & UID</th>
+                    <th>Jabatan</th>
+                    <th>Tahun</th>
+                    <th>Masa Aktif</th>
+                    <th>Status</th>
+                    <th>QR Code</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="memberData"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <div class="modal-header">
+            <h2 id="m-nama" style="margin:0; color:var(--accent);">Nama Anggota</h2>
+            <p id="m-uid" style="margin:5px 0 0; opacity:0.8; font-size:14px;">UID: -</p>
+        </div>
+        <div style="text-align:center;">
+            <img id="m-foto" src="" class="profile-img" alt="Foto">
+        </div>
+        <div class="modal-body">
+            <div id="m-status" class="status-tag" style="margin-bottom:15px;">Status</div>
+            <div class="info-grid">
+                <div class="info-box"><span>Jabatan</span><strong id="m-jab">-</strong></div>
+                <div class="info-box"><span>Tahun Gabung</span><strong id="m-thn">-</strong></div>
+                <div class="info-box"><span>Masa Aktif</span><strong id="m-masa">-</strong></div>
+                <div class="info-box"><span>Verifikasi</span><strong style="color:green;">✅ Valid</strong></div>
+            </div>
+            <div style="text-align:left; font-weight:bold; font-size:14px; color:var(--primary);">📝 Rekam Jejak:</div>
+            <div id="m-jejak" class="rekam-jejak-box">-</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const SHEET_ID = '1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig';
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=data`;
+    const currentUrl = window.location.href.split('?')[0];
+    let allMembers = [];
+
+    async function getData() {
+        try {
+            const res = await fetch(url);
+            const text = await res.text();
+            const json = JSON.parse(text.substring(47).slice(0, -2));
+            const rows = json.table.rows;
+            let html = '';
+            let noUrut = 1;
+
+            rows.forEach((row, i) => {
+                const uid = row.c[0] ? String(row.c[0].v).trim() : '';
+                if (uid.toLowerCase().includes("nomor") || uid === "") return;
+
+                const member = {
+                    uid: uid,
+                    nama: row.c[1] ? row.c[1].v : '-',
+                    jab: row.c[2] ? row.c[2].v : '-',
+                    thn: row.c[3] ? row.c[3].v : '-',
+                    masa: row.c[4] ? row.c[4].v : '-',
+                    stat: row.c[5] ? row.c[5].v : 'Aktif',
+                    foto: row.c[6] ? row.c[6].v : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png', // Foto di Kolom G
+                    jejak: row.c[7] ? row.c[7].v : 'Belum ada rekam jejak.', // Jejak di Kolom H
+                    elID: "qr-" + i
+                };
+                allMembers.push(member);
+
+                html += `
+                    <tr onclick="showProfile('${member.uid}')">
+                        <td style="color:#999;">${noUrut++}</td>
+                        <td>${member.uid}<br><small style="color:#777; font-weight:normal;">${member.nama}</small></td>
+                        <td>${member.jab}</td>
+                        <td>${member.thn}</td>
+                        <td>${member.masa}</td>
+                        <td><span class="status-tag ${member.stat.toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni'}">${member.stat}</span></td>
+                        <td><div id="${member.elID}"></div></td>
+                        <td><button class="btn-download" onclick="event.stopPropagation(); dl('${member.elID}', '${member.nama}')">Unduh</button></td>
+                    </tr>`;
+            });
+
+            document.getElementById('memberData').innerHTML = html;
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('mainTable').style.display = 'table';
+
+            allMembers.forEach(m => {
+                new QRCode(document.getElementById(m.elID), { text: `${currentUrl}?id=${m.uid}`, width: 60, height: 60 });
+            });
+
+            // Auto-open jika scan
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('id')) showProfile(urlParams.get('id'));
+
+        } catch (e) { document.getElementById('loading').innerText = "Gagal memuat data."; }
+    }
+
+    function showProfile(uid) {
+        const m = allMembers.find(x => x.uid === uid);
+        if (m) {
+            document.getElementById('m-nama').innerText = m.nama;
+            document.getElementById('m-uid').innerText = "UID: " + m.uid;
+            document.getElementById('m-jab').innerText = m.jab;
+            document.getElementById('m-thn').innerText = m.thn;
+            document.getElementById('m-masa').innerText = m.masa;
+            document.getElementById('m-jejak').innerHTML = m.jejak.replace(/\n/g, '<br>');
+            document.getElementById('m-foto').src = m.foto;
+            const s = document.getElementById('m-status');
+            s.innerText = m.stat;
+            s.className = "status-tag " + (m.stat.toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni');
+            document.getElementById('profileModal').style.display = 'block';
+        }
+    }
+
+    function closeModal() { document.getElementById('profileModal').style.display = 'none'; }
+    window.onclick = (e) => { if(e.target == document.getElementById('profileModal')) closeModal(); }
+    
+    function dl(id, name) {
+        const canvas = document.getElementById(id).querySelector('canvas');
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL();
+        link.download = `QR_${name}.png`;
+        link.click();
+    }
+
+    document.getElementById('searchInput').oninput = (e) => {
+        const val = e.target.value.toLowerCase();
+        document.querySelectorAll('#memberData tr').forEach(tr => {
+            tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none';
+        });
+    };
+
+    window.onload = getData;
+</script>
+</body>
+</html>
