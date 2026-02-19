@@ -42,6 +42,7 @@
                 <th>UID</th>
                 <th>Nama Lengkap</th>
                 <th>Jabatan</th>
+                <th>Tahun Bergabung</th>
                 <th>Masa Aktif</th>
                 <th>Status</th>
                 <th class="barcode-area">Barcode</th>
@@ -78,8 +79,9 @@
                     elID: safeElementID,
                     nama: row.c[1] ? row.c[1].v : '',
                     jabatan: row.c[2] ? row.c[2].v : '',
-                    masa: row.c[3] ? row.c[3].v : '',
-                    status: row.c[4] ? row.c[4].v : ''
+                    tahunbergabung: row.c[3] ? row.c[3].v : '',
+                    masa: row.c[4] ? row.c[4].v : '',
+                    status: row.c[5] ? row.c[5].v : ''
                 };
 
                 if(member.uid) {
@@ -89,6 +91,7 @@
                             <td><strong>${member.uid}</strong></td>
                             <td>${member.nama}</td>
                             <td>${member.jabatan}</td>
+                            <td>${member.tahunbergabung}</td>
                             <td>${member.masa}</td>
                             <td class="${String(member.status).toLowerCase() === 'aktif' ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
                             <td class="barcode-area"><svg id="${member.elID}"></svg></td>
@@ -135,3 +138,4 @@
 </script>
 </body>
 </html>
+
