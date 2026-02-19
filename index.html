@@ -2,23 +2,37 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Database Anggota Redaksi</title>
+    <title>Database Anggota Ilaikum Magazine</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.5/JsBarcode.all.min.js"></script>
     <style>
         :root { --primary: #132C47; --accent: #FFCF00; }
         body { font-family: 'Montserrat', sans-serif; background: #f4f4f4; padding: 20px; color: var(--primary); }
         .container { max-width: 1100px; margin: auto; }
         header { background: var(--primary); color: var(--accent); padding: 30px; border-radius: 15px; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .search-box { width: 100%; padding: 15px; margin-bottom: 25px; border: 2px solid var(--primary); border-radius: 8px; font-size: 16px; font-family: 'Montserrat'; }
+        
+        /* SEARCH BAR STYLE */
+        .search-box { 
+            width: 100%; 
+            padding: 15px; 
+            margin-bottom: 25px; 
+            border: 2px solid var(--primary); 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-family: 'Montserrat';
+            box-sizing: border-box; /* Biar gak luber */
+        }
+
         table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
-        thead { background: var(--primary); color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+        thead { background: var(--primary); color: var(--accent); text-transform: uppercase; }
         th, td { padding: 18px; text-align: left; border-bottom: 1px solid #eee; }
         tr:hover { background: #fdf6d8; transition: 0.3s; }
         .status-aktif { color: #2ecc71; font-weight: bold; }
         .status-alumni { color: #95a5a6; }
-        canvas { max-width: 120px; }
-        #loading { text-align: center; padding: 40px; font-weight: bold; color: var(--primary); }
+        
+        /* Barcode Style */
+        svg.barcode { width: 120px; height: auto; }
+        #loading { text-align: center; padding: 40px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -26,12 +40,12 @@
 <div class="container">
     <header>
         <h1 style="margin:0; font-weight: 700;">Database Anggota Ilaikum Magazine</h1>
-        <p style="margin: 10px 0 0; opacity: 0.9;">Selamat Datang di Pusat Data Anggota Ilaikum Magazine, have a nice day!</p>
+        <p style="margin: 10px 0 0; opacity: 0.9;">Selamat Datang di Pusat Data Anggota Ilaikum Magazine, Have a nice day!</p>
     </header>
 
-    <input type="text" id="searchInput" class="search-box" placeholder="Cari berdasarkan Nama atau ID Anggota...">
+    <input type="text" id="searchInput" class="search-box" placeholder="Cari berdasarkan Nama, UID, atau Jabatan...">
 
-    <div id="loading">Menghubungkan ke Google Sheets...</div>
+    <div id="loading">Menghubungkan ke Google Sheets & Membuat Barcode...</div>
 
     <table id="mainTable" style="display:none;">
         <thead>
@@ -41,14 +55,13 @@
                 <th>Jabatan</th>
                 <th>Masa Aktif</th>
                 <th>Status</th>
-                <th>Barcode</th>
+                <th style="text-align:center">Barcode</th>
             </tr>
         </thead>
         <tbody id="memberData"></tbody>
     </table>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <script>
     const SHEET_ID = '1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig';
     const SHEET_NAME = 'data';
@@ -57,8 +70,6 @@
     async function getData() {
         try {
             const response = await fetch(url);
-            if (!response.ok) throw new Error('Network response was not ok');
-            
             const text = await response.text();
             const json = JSON.parse(text.substring(47).slice(0, -2));
             const rows = json.table.rows;
@@ -67,12 +78,11 @@
             const members = [];
 
             rows.forEach((row, index) => {
-                // Pastikan baris 1 di Google Sheets adalah Judul: UID, Nama, Jabatan, dll.
-                // Data Pimred mulai di Baris 2.
+                // Lewati baris 1 (Header di Sheets)
                 if (index === 0) return; 
 
                 const member = {
-                    id: row.c[0] ? row.c[0].v : '',
+                    id: row.c[0] ? row.c[1] ? row.c[0].v : row.c[0].v : 'N/A', // UID
                     nama: row.c[1] ? row.c[1].v : '',
                     jabatan: row.c[2] ? row.c[2].v : '',
                     masa: row.c[3] ? row.c[3].v : '',
@@ -87,7 +97,7 @@
                         <td>${member.jabatan}</td>
                         <td>${member.masa}</td>
                         <td class="${String(member.status).toLowerCase() === 'aktif' ? 'status-aktif' : 'status-alumni'}">${member.status}</td>
-                        <td><svg class="barcode-item" id="barcode-${member.id}"></svg></td>
+                        <td style="text-align:center"><svg class="barcode" id="bc-${member.id}"></svg></td>
                     </tr>`;
             });
 
@@ -95,31 +105,30 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('mainTable').style.display = 'table';
 
-            // GENERATE BARCODE (Dijalankan setelah tabel muncul)
+            // GENERATE BARCODE (Dijalankan SETELAH tabel muncul)
             members.forEach(m => {
-                if(m.id) {
+                if(m.id && m.id !== 'N/A') {
                     try {
-                        JsBarcode(`#barcode-${m.id}`, String(m.id), {
+                        JsBarcode(`#bc-${m.id}`, String(m.id), {
                             format: "CODE128",
                             width: 1.5,
                             height: 40,
-                            displayValue: true, // Biar UID muncul di bawah barcode
+                            displayValue: true,
                             fontSize: 12,
                             lineColor: "#132C47"
                         });
                     } catch (e) {
-                        console.error("Barcode gagal buat ID: " + m.id);
+                        console.error("Gagal buat barcode ID: " + m.id, e);
                     }
                 }
             });
 
         } catch (err) {
-            console.error(err);
-            document.getElementById('loading').innerHTML = `<span style="color:red">Error: ${err.message}</span><br>Cek ID Spreadsheet dan pastikan akses "Anyone with the link".`;
+            document.getElementById('loading').innerHTML = "Gagal memuat data. Pastikan Google Sheets sudah di-Share (Public).";
         }
     }
 
-    // Fungsi Cari
+    // FUNGSI SEARCH (Aktifkan pencarian)
     document.getElementById('searchInput').addEventListener('input', function(e) {
         const keyword = e.target.value.toLowerCase();
         const rows = document.querySelectorAll('#memberData tr');
@@ -132,7 +141,4 @@
     getData();
 </script>
 </body>
-
 </html>
-
-
