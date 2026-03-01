@@ -36,29 +36,41 @@
         .status-aktif { background: #e8f5e9; color: #2ecc71; }
         .status-alumni { background: #f5f5f5; color: #95a5a6; }
 
-        /* MODAL / FLOATING CARD STYLE */
+        /* --- EDIT BAGIAN INI UNTUK FLOATING CARD --- */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(19,44,71,0.9); backdrop-filter: blur(8px); }
+        
         .modal-content { 
-            background: white; margin: 2% auto; width: 90%; max-width: 450px; border-radius: 25px; 
-            overflow: hidden; position: relative; animation: zoomIn 0.3s ease; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            background: #132c47; margin: 5% auto; width: 90%; max-width: 650px; border-radius: 20px; 
+            overflow: hidden; position: relative; animation: slideUp 0.3s ease; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
-        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        .modal-header { background: linear-gradient(135deg, #132c47 0%, #1e4571 100%); padding: 40px 20px; text-align: center; color: white; }
+        
+        .profile-flex-wrapper { display: flex; align-items: stretch; min-height: 250px; }
+        
+        /* Bagian Kiri (Foto) */
+        .left-photo-section {
+            flex: 0 0 220px; background: linear-gradient(135deg, #132c47 0%, #1e4571 100%);
+            display: flex; justify-content: center; align-items: center; position: relative;
+        }
+        .left-photo-section::after { content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 8px; background: #ffcf00; }
+        
         .profile-img { 
-            width: 120px; height: 240px; border-radius: 50%; border: 5px solid var(--accent); 
-            margin-top: -60px; background: #eee; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            width: 150px; height: 150px; border-radius: 50%; border: 5px solid white; 
+            background: white; object-fit: contain; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        .modal-body { padding: 20px 30px 30px; text-align: center; }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
-        .info-box { background: #f8f9fa; padding: 10px; border-radius: 10px; text-align: left; }
-        .info-box span { font-size: 10px; color: #888; text-transform: uppercase; display: block; }
-        .info-box strong { font-size: 13px; color: #132c47; }
-
-        .rekam-jejak-box { background: #fff8e1; padding: 15px; border-radius: 12px; border-left: 4px solid var(--accent); text-align: left; margin-left: 15px; font-size: 13px; line-height: 1.5; }
-        .close-btn { position: absolute; right: 20px; top: 15px; font-size: 30px; color: white; cursor: pointer; font-weight: bold; }
-
-        .btn-download { background: #ffcf00; color: #132c47; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        /* Bagian Kanan (Info Kotak-kotak) */
+        .right-info-section { flex: 1; padding: 30px; color: white; }
+        .modal-header h2 { margin: 0; color: #ffcf00; font-size: 22px; }
+        .modal-header p { margin: 5px 0 20px; opacity: 0.8; font-size: 13px; }
+        
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .info-item { background: #1e4571; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
+        .info-item span { font-size: 10px; color: #ffcf00; text-transform: uppercase; display: block; }
+        .info-item strong { font-size: 13px; color: white; display: block; }
+        
+        .rekam-jejak-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.5; color: #eee; border-left: 3px solid #ffcf00; }
+        
+        .close-btn { position: absolute; right: 20px; top: 15px; font-size: 25px; color: white; cursor: pointer; z-index: 10; }
     </style>
 </head>
 <body>
@@ -100,24 +112,25 @@
 <div id="profileModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal()">&times;</span>
-        <div class="modal-header">
-            <h2 id="m-nama" style="margin:0; color:var(--accent);">Nama Anggota</h2>
-            <p id="m-uid" style="margin:5px 0 0; opacity:0.8; font-size:14px;">UID: -</p>
-        </div>
-        <div style="text-align:center;">
-            <img id="m-foto" src="" class="profile-img" alt="Foto">
-        </div>
-        <div class="modal-body">
-            <div id="m-status" class="status-tag" style="margin-bottom:15px;">Status</div>
-            <div class="info-grid">
-                <div class="info-box"><span>Jabatan</span><strong id="m-jab">-</strong></div>
-                <div class="info-box"><span>Divisi</span><strong id="m-divs">-</strong></div>
-                <div class="info-box"><span>Tahun Bergabung</span><strong id="m-thn">-</strong></div>
-                <div class="info-box"><span>Masa Aktif</span><strong id="m-masa">-</strong></div>
-                <div class="info-box"><span>Status</span><strong style="color:green;">✅ Valid</strong></div>
+        <div class="profile-flex-wrapper">
+            <div class="left-photo-section">
+                <img id="m-foto" src="" class="profile-img" alt="Foto">
             </div>
-            <div style="text-align:left; font-weight:bold; font-size:14px; color:var(--primary);">📝 Jenjang Karier:</div>
-            <div id="m-jejak" class="rekam-jejak-box">-</div>
+            <div class="right-info-section">
+                <div class="modal-header">
+                    <h2 id="m-nama">Nama Lengkap</h2>
+                    <p id="m-uid">UID: -</p>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item"><span>Jabatan</span><strong id="m-jab">-</strong></div>
+                    <div class="info-item"><span>Divisi</span><strong id="m-divs">-</strong></div>
+                    <div class="info-item"><span>Tahun Bergabung</span><strong id="m-thn">-</strong></div>
+                    <div class="info-item"><span>Masa Berlaku</span><strong id="m-masa">-</strong></div>
+                    <div class="info-item"><span>Status</span><strong id="m-stat">-</strong></div>
+                </div>
+                <div style="font-size:12px; color:#ffcf00; font-weight:bold; margin-bottom:5px;">📝 REKAM JEJAK</div>
+                <div id="m-jejak" class="rekam-jejak-box">-</div>
+            </div>
         </div>
     </div>
 </div>
@@ -224,6 +237,7 @@
 </script>
 </body>
 </html>
+
 
 
 
