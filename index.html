@@ -83,6 +83,7 @@
                     <th>No</th>
                     <th>Nama & UID</th>
                     <th>Jabatan</th>
+                     <th>Divisi</th>
                     <th>Tahun</th>
                     <th>Masa Aktif</th>
                     <th>Status</th>
@@ -109,6 +110,7 @@
             <div id="m-status" class="status-tag" style="margin-bottom:15px;">Status</div>
             <div class="info-grid">
                 <div class="info-box"><span>Jabatan</span><strong id="m-jab">-</strong></div>
+                <div class="info-box"><span>Divisi</span><strong id="m-divs">-</strong></div>
                 <div class="info-box"><span>Tahun Gabung</span><strong id="m-thn">-</strong></div>
                 <div class="info-box"><span>Masa Aktif</span><strong id="m-masa">-</strong></div>
                 <div class="info-box"><span>Status</span><strong style="color:green;">✅ Valid</strong></div>
@@ -142,11 +144,12 @@
                     uid: uid,
                     nama: row.c[1] ? row.c[1].v : '-',
                     jab: row.c[2] ? row.c[2].v : '-',
-                    thn: row.c[3] ? row.c[3].v : '-',
-                    masa: row.c[4] ? row.c[4].v : '-',
-                    stat: row.c[5] ? row.c[5].v : 'Aktif',
-                    foto: row.c[6] ? row.c[6].v : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png', // Foto di Kolom G
-                    jejak: row.c[7] ? row.c[7].v : 'Belum ada jenjang karier.', // Jejak di Kolom H
+                    divs: row.c[3] ? row.c[3].v : '-',
+                    thn: row.c[4] ? row.c[4].v : '-',
+                    masa: row.c[5] ? row.c[5].v : '-',
+                    stat: row.c[6] ? row.c[6].v : 'Aktif',
+                    foto: row.c[7] ? row.c[7].v : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png', // Foto di Kolom G
+                    jejak: row.c[8] ? row.c[8].v : 'Belum ada jenjang karier.', // Jejak di Kolom H
                     elID: "qr-" + i
                 };
                 allMembers.push(member);
@@ -156,6 +159,7 @@
                         <td style="color:#999;">${noUrut++}</td>
                         <td>${member.uid}<br><small style="color:#777; font-weight:normal;">${member.nama}</small></td>
                         <td>${member.jab}</td>
+                        <td>${member.divs}</td>
                         <td>${member.thn}</td>
                         <td>${member.masa}</td>
                         <td><span class="status-tag ${member.stat.toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni'}">${member.stat}</span></td>
@@ -185,6 +189,7 @@
             document.getElementById('m-nama').innerText = m.nama;
             document.getElementById('m-uid').innerText = "UID: " + m.uid;
             document.getElementById('m-jab').innerText = m.jab;
+            document.getElementById('m-divs').innerText = m.jab;
             document.getElementById('m-thn').innerText = m.thn;
             document.getElementById('m-masa').innerText = m.masa;
             document.getElementById('m-jejak').innerHTML = m.jejak.replace(/\n/g, '<br>');
@@ -218,6 +223,7 @@
 </script>
 </body>
 </html>
+
 
 
 
