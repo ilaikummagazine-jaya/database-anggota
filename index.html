@@ -26,10 +26,22 @@
             width: auto; 
         }
         
-        .hero h1 { 
+        /* --- PERBAIKAN HEADER HERO --- */
+        .hero h1:first-of-type { 
             margin: 0; 
-            font-size: clamp(1rem, 5vw, 2rem); /* Font otomatis mengecil di HP, membesar di PC */
+            font-size: clamp(1.8rem, 5vw, 2.5rem); /* NAMA WEB JADI GEDE & TEGAS */
+            color: var(--accent); 
+            font-weight: 700;
             line-height: 1.2;
+        }
+        
+        /* Tulisan instruksi dibuat lebih kecil & tipis */
+        .hero h1:last-of-type { 
+            margin-top: 10px;
+            font-size: clamp(0.8rem, 3vw, 1rem); 
+            font-weight: 400; 
+            color: #cbd5e0; /* Warna agak redup biar gak ganggu mata */
+            letter-spacing: 0.5px;
         }
 
         .search-box { width: 100%; padding: 18px; border: none; border-radius: 8px; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); outline: none; box-sizing: border-box; }
@@ -94,8 +106,22 @@
         
         /* Bagian Kanan (Info Kotak-kotak) */
         .right-info-section { flex: 1; padding: 30px; color: white; }
-        .modal-header h2 { margin: 0; color: #ffcf00; font-size: 22px; }
-        .modal-header p { margin: 5px 0 20px; opacity: 0.8; font-size: 13px; }
+        
+      /* --- PERBAIKAN NAMA DI FLOATING CARD --- */
+        .modal-header h2 { 
+            margin: 0; 
+            color: #ffcf00; 
+            font-size: 28px; /* Nama anggota di dalam kartu dibuat lebih gede */
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .modal-header p { 
+            margin: 5px 0 20px; 
+            opacity: 0.8; 
+            font-size: 14px; 
+            color: #fff;
+        }
         
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .info-item { background: #1e4571; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
@@ -140,8 +166,8 @@
     
     <div>
         <p style="color:var(--accent); font-weight:bold; margin-bottom:5px;">Selamat Datang!</p>
-        <h1>Pusat Database Anggota Ilaikum Magazine</h1>
-        <p>Gunakan bilah pencarian untuk mencari data anggota Ilaikum Magazine, Have a nice day!</p>
+        <h1>Database Anggota Ilaikum Magazine</h1>
+        <h1>Gunakan bilah pencarian untuk mencari data anggota Ilaikum Magazine, Have a nice day!</h1>
     </div>
 </div>
 
@@ -304,6 +330,7 @@
 </script>
 </body>
 </html>
+
 
 
 
