@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Database Anggota Ilaikum Magazine</title>
     <link rel="icon" type="image/png" href="ilaikum.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
@@ -12,16 +13,49 @@
         
         .hero { 
             background: linear-gradient(135deg, #132c47 0%, #1e4571 100%);
-            color: white; padding: 60px 20px; text-align: left; padding-left: 10%;
+            color: white; 
+            padding: 30px 5%; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px;
+            flex-wrap: wrap; /* Supaya kalau layar sempit, logo dan teks numpuk vertikal */
         }
-        .hero h1 { margin: 0; font-size: 2.2em; color: var(--accent); letter-spacing: 1px; }
+        
+        .hero img { 
+            height: clamp(50px, 10vw, 80px); /* Ukuran logo dinamis */
+            width: auto; 
+        }
+        
+        .hero h1 { 
+            margin: 0; 
+            font-size: clamp(1rem, 5vw, 2rem); /* Font otomatis mengecil di HP, membesar di PC */
+            line-height: 1.2;
+        }
 
-        .container { max-width: 1200px; margin: -30px auto 40px; padding: 0 20px; }
         .search-box { width: 100%; padding: 18px; border: none; border-radius: 8px; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); outline: none; box-sizing: border-box; }
         
-        /* Tabel Style */
-        .table-wrapper { background: white; border-radius: 10px; overflow-x: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 25px; }
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        .container { 
+            width: 100%; 
+            max-width: 1200px; 
+            margin: -20px auto 40px; 
+            padding: 0 10px; 
+            box-sizing: border-box; 
+        }
+        
+        .table-wrapper { 
+            background: white; 
+            border-radius: 10px; 
+            overflow-x: auto; /* Munculin scrollbar horizontal khusus di tabel saja */
+            -webkit-overflow-scrolling: touch; /* Biar scroll di iPhone mulus */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+        }
+        
+        table { 
+            width: 100%; 
+            min-width: 900px; /* Tabel tetep lega, user tinggal geser kanan-kiri di HP */
+            border-collapse: collapse; 
+        }
+        
         thead { background: #132c47; color: white; position: sticky; top: 0; }
         th { padding: 15px; text-align: center; font-size: 13px; text-transform: uppercase; }
         td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; vertical-align: middle; }
@@ -71,6 +105,32 @@
         .rekam-jejak-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.5; color: #eee; border-left: 3px solid #ffcf00; }
         
         .close-btn { position: absolute; right: 20px; top: 15px; font-size: 25px; color: white; cursor: pointer; z-index: 10; }
+       
+        @media screen and (max-width: 600px) {
+            .modal-content { 
+                width: 95%; 
+                margin: 20% auto; 
+            }
+            
+            .profile-flex-wrapper { 
+                flex-direction: column; /* Foto di atas, Info di bawah */
+            }
+        
+            .left-photo-section { 
+                flex: 0 0 auto; 
+                width: 100%; 
+                padding: 20px 0; 
+            }
+        
+            .info-grid { 
+                grid-template-columns: 1fr; /* Jadi satu kolom memanjang ke bawah */
+            }
+            
+            .right-info-section {
+                padding: 15px;
+            }
+        }
+        
     </style>
 </head>
 <body>
@@ -244,6 +304,7 @@
 </script>
 </body>
 </html>
+
 
 
 
