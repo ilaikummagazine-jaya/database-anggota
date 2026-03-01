@@ -200,17 +200,24 @@
     function showProfile(uid) {
         const m = allMembers.find(x => x.uid === uid);
         if (m) {
+            // Mengisi Nama dan UID di Header Modal
             document.getElementById('m-nama').innerText = m.nama;
             document.getElementById('m-uid').innerText = "UID: " + m.uid;
+            
+            // Mengisi Foto (Kolom G)
+            document.getElementById('m-foto').src = m.foto;
+            
+            // Mengisi Kotak-kotak Detail Informasi (Divisi, Jabatan, dll)
             document.getElementById('m-jab').innerText = m.jab;
-            document.getElementById('m-divs').innerText = m.divs;
+            document.getElementById('m-divs').innerText = m.divs; // Ini ID baru untuk Divisi
             document.getElementById('m-thn').innerText = m.thn;
             document.getElementById('m-masa').innerText = m.masa;
+            document.getElementById('m-stat').innerText = m.stat; // Status masuk ke kotak info
+            
+            // Mengisi Rekam Jejak (Kolom H)
             document.getElementById('m-jejak').innerHTML = m.jejak.replace(/\n/g, '<br>');
-            document.getElementById('m-foto').src = m.foto;
-            const s = document.getElementById('m-status');
-            s.innerText = m.stat;
-            s.className = "status-tag " + (m.stat.toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni');
+            
+            // Menampilkan Modal
             document.getElementById('profileModal').style.display = 'block';
         }
     }
@@ -237,6 +244,7 @@
 </script>
 </body>
 </html>
+
 
 
 
