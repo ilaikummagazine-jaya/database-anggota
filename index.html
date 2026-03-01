@@ -131,7 +131,58 @@
         .rekam-jejak-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.5; color: #eee; border-left: 3px solid #ffcf00; }
         
         .close-btn { position: absolute; right: 20px; top: 15px; font-size: 25px; color: white; cursor: pointer; z-index: 10; }
-       
+
+        /* Mengatur tampilan QR di kolom tabel */
+        div[id^="qr-"] canvas, div[id^="qr-"] img {
+            width: 80px !important;  /* Di layar web tetep kecil biar rapi */
+            height: 80px !important;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: block;
+        }
+        
+        /* Lebar kolom QR di tabel */
+        table td:nth-child(8) { 
+            width: 100px; 
+        }
+
+        /* --- CSS KHUSUS PRINT --- */
+            @media print {
+                /* Sembunyikan semua elemen web yang gak penting (navigasi, tombol, dll) */
+                body * { visibility: hidden; }
+                
+                /* Tampilkan hanya area QR yang mau diprint */
+                .print-area, .print-area * { visibility: visible; }
+                
+                /* Atur posisi QR di kertas */
+                .print-area {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 300px; /* Sesuai 300px lo */
+                    height: 300px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background: white;
+                }
+            
+                /* Pastikan warna navy muncul saat diprint (opsional) */
+                * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            
+                /* Atur ukuran kertas ke ukuran kecil jika ingin presisi */
+                @page {
+                    size: auto;
+                    margin: 0mm;
+                }
+            }
+            
+            /* Style tambahan agar QR di layar tetap rapi sebelum diprint */
+            #qr-print-container {
+                display: none; /* Sembunyi di web, muncul di print */
+            }
+        
         @media screen and (max-width: 600px) {
             .modal-content { 
                 width: 95%; 
@@ -265,6 +316,12 @@
                         <td><span class="status-tag ${member.stat.toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni'}">${member.stat}</span></td>
                         <td><div id="${member.elID}"></div></td>
                         <td><button class="btn-download" onclick="event.stopPropagation(); dl('${member.elID}', '${member.nama}')">Unduh</button></td>
+                        <td>
+                            <button class="btn-download" onclick="event.stopPropagation(); dl('${member.elID}', '${member.nama}')">Unduh</button>
+                            
+                            <button class="btn-download" style="background:#132c47; color:white; margin-top:5px;" onclick="event.stopPropagation(); printQR('${member.elID}', '${member.nama}')">Print</button>
+                        </td>
+                        
                     </tr>`;
             });
 
@@ -272,8 +329,16 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('mainTable').style.display = 'table';
 
+            // Cari bagian ini dan ganti angkanya
             allMembers.forEach(m => {
-                new QRCode(document.getElementById(m.elID), { text: `${currentUrl}?id=${m.uid}`, width: 60, height: 60 });
+                new QRCode(document.getElementById(m.elID), { 
+                    text: `${currentUrl}?id=${m.uid}`, 
+                    width: 300,  // <--- Ganti jadi 128
+                    height: 300, // <--- Ganti jadi 128
+                    colorDark : "#132c47",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H // Level Medium biar titiknya lebih renggang
+                });
             });
 
             // Auto-open jika scan
@@ -308,6 +373,30 @@
         }
     }
 
+        function printQR(id, name) {
+        // 1. Ambil data gambar dari canvas QR yang sudah tergenerate (300px)
+        const canvas = document.getElementById(id).querySelector('canvas');
+        const dataUrl = canvas.toDataURL("image/png");
+    
+        // 2. Buat elemen sementara untuk area print
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Print QR - ${name}</title>
+                <style>
+                    body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+                    img { width: 300px; height: 300px; } /* Memastikan ukuran fisik di print */
+                </style>
+            </head>
+            <body onload="window.print(); window.close();">
+                <img src="${dataUrl}" />
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+    }
+    
     function closeModal() { document.getElementById('profileModal').style.display = 'none'; }
     window.onclick = (e) => { if(e.target == document.getElementById('profileModal')) closeModal(); }
     
@@ -330,6 +419,7 @@
 </script>
 </body>
 </html>
+
 
 
 
