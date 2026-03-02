@@ -129,6 +129,25 @@
         .info-item strong { font-size: 13px; color: white; display: block; }
         
         .rekam-jejak-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.5; color: #eee; border-left: 3px solid #ffcf00; }
+
+        .btn-download {
+            background: #ffcf00; 
+            color: #132c47; 
+            border: none; 
+            padding: 8px 15px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            font-size: 12px;
+            transition: 0.3s;
+            white-space: nowrap; /* Biar tulisan Unduh gak kepotong jadi 2 baris */
+        }
+        
+        .btn-download:hover {
+            background: #132c47;
+            color: #ffcf00;
+            transform: translateY(-2px);
+        }
         
         .close-btn { position: absolute; right: 20px; top: 15px; font-size: 25px; color: white; cursor: pointer; z-index: 10; }
 
@@ -316,9 +335,6 @@
                         <td><span class="status-tag ${member.stat.toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni'}">${member.stat}</span></td>
                         <td><div id="${member.elID}"></div></td>
                         <td><button class="btn-download" onclick="event.stopPropagation(); dl('${member.elID}', '${member.nama}')">Unduh</button></td>
-                        <td>
-                            <button class="btn-download" onclick="event.stopPropagation(); dl('${member.elID}', '${member.nama}')">Unduh</button>
-                        </td>
                         
                     </tr>`;
             });
@@ -419,6 +435,7 @@
 </script>
 </body>
 </html>
+
 
 
 
