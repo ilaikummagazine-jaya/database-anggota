@@ -317,7 +317,7 @@
     </div>
 </div>
 
-<div id="scanMenu" style="display:none; position:fixed; ...">
+<div id="scanMenu" style="display:none; position:fixed; z-index:99999; left:0; top:0; width:100%; height:100%; background:rgba(13, 27, 42, 0.98); display:flex; justify-content:center; align-items:center;">
     
     <div class="modal-content" style="width: 100%; max-width: 350px; background: #132c47; border: 2px solid #ffcf00; border-radius: 20px; padding: 30px; box-sizing: border-box; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         
@@ -401,9 +401,34 @@
                 });
             });
 
-            // Auto-open jika scan
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('id')) showProfile(urlParams.get('id'));
+            // --- LOGIKA UTAMA: JALANKAN SETELAH SEMUA SIAP ---
+            async function initApp() {
+                // 1. Tarik data dari Sheets sampai selesai
+                await getData(); 
+            
+                // 2. Cek Parameter URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const view = urlParams.get('view');
+                const id = urlParams.get('id');
+            
+                if (id) {
+                    if (view === 'pilihan') {
+                        // MODE SCAN QR: Munculkan menu pilihan saja
+                        const menu = document.getElementById('scanMenu');
+                        if (menu) {
+                            menu.style.display = 'flex'; // Munculkan modal menu
+                            // Pastikan profileModal tetap tertutup
+                            document.getElementById('profileModal').style.display = 'none';
+                        }
+                    } else {
+                        // MODE LINK BIASA: Langsung buka profil (floating)
+                        showProfile(id);
+                    }
+                }
+            }
+            
+            // Jalankan fungsi di atas saat browser selesai loading
+            window.addEventListener('DOMContentLoaded', initApp);
 
         } catch (e) { document.getElementById('loading').innerText = "Gagal memuat data."; }
     }
@@ -495,9 +520,39 @@
         });
     };
 
+    // FUNGSI INISIALISASI (OTAK UTAMA)
+    async function initApp() {
+        // 1. Ambil data dari Google Sheets dulu sampai selesai
+        await getData(); 
+    
+        // 2. Baca URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const view = urlParams.get('view');
+        const id = urlParams.get('id');
+    
+        if (id) {
+            if (view === 'pilihan') {
+                // JIKA SCAN QR: Munculkan Menu & Pastikan Profil Tertutup
+                const menu = document.getElementById('scanMenu');
+                if (menu) {
+                    menu.style.display = 'flex';
+                    // Pastikan profileModal beneran sembunyi
+                    document.getElementById('profileModal').style.display = 'none';
+                }
+            } else {
+                // JIKA LINK BIASA: Langsung buka profil
+                showProfile(id);
+            }
+        }
+    }
+    
+    // JALANKAN SAAT HALAMAN SELESAI DIMUAT
+    window.addEventListener('DOMContentLoaded', initApp);
+    
 </script>
 </body>
 </html>
+
 
 
 
