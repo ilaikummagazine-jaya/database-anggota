@@ -442,14 +442,28 @@
         // 2. Generate QR Code ke dalam kontainer sementara tersebut
         new QRCode(tempDiv, {
             text: `${currentUrl}?view=pilihan&id=${uid}`,
-            width: 500, // Ukuran lebih besar agar hasil download tajam
+            width: 500, 
             height: 500,
             colorDark: "#132c47",
             colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H // Level koreksi tinggi agar aman discan
+            correctLevel: QRCode.CorrectLevel.H 
         });
+
+        // 3. Tunggu 100ms agar library selesai menggambar ke canvas
+        setTimeout(() => {
+            const canvas = tempDiv.querySelector('canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL("image/png");
+                link.download = `QR_ILAIKUM_${name}_${uid}.png`;
+                link.click();
+            }
+            // Hapus elemen sementara dari memori
+            tempDiv.remove();
+        }, 100);
+    } // <--- Pastikan kurung kurawal tutup ini ada!
     
-        // 3. Tunggu sebentar sampai library selesai menggambar (render)
+
         
     document.getElementById('searchInput').oninput = (e) => {
         const val = e.target.value.toLowerCase();
@@ -480,6 +494,7 @@
 </script>
 </body>
 </html>
+
 
 
 
