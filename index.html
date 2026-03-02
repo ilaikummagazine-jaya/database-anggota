@@ -317,7 +317,7 @@
     </div>
 </div>
 
-<div id="scanMenu" style="display:none; position:fixed; z-index:99999; left:0; top:0; width:100%; height:100%; background:rgba(13, 27, 42, 0.98); display:flex; justify-content:center; align-items:center;">
+<div id="scanMenu" style="display:none; position:fixed; z-index:99999; left:0; top:0; width:100%; height:100%; background:rgba(13, 27, 42, 0.98); justify-content:center; align-items:center;">
     
     <div class="modal-content" style="width: 100%; max-width: 350px; background: #132c47; border: 2px solid #ffcf00; border-radius: 20px; padding: 30px; box-sizing: border-box; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         
@@ -326,9 +326,7 @@
         
         <div style="display: flex; flex-direction: column; gap: 12px;">
             <button onclick="bukaValidasi()" class="btn-pilihan">🔍 VALIDASI ANGGOTA</button>
-            
             <a href="https://instagram.com/majalah_lo" target="_blank" class="btn-pilihan" style="background: #e1306c; color: white;">📸 HUBUNGI KAMI (IG)</a>
-            
             <a href="mailto:redaksi@ilaikum.com" class="btn-pilihan" style="background: #ffffff; color: #132c47;">✉️ LAPOR VIA EMAIL</a>
         </div>
 
@@ -339,7 +337,7 @@
 <script>
     const SHEET_ID = '1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig';
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=data`;
-    const currentUrl = window.location.href.split('?')[0];
+    const currentUrl = window.location.origin + window.location.pathname;
     let allMembers = [];
 
     async function getData() {
@@ -363,8 +361,8 @@
                     thn: row.c[4] ? row.c[4].v : '-',
                     masa: row.c[5] ? row.c[5].v : '-',
                     stat: row.c[6] ? row.c[6].v : 'Aktif',
-                    foto: row.c[7] ? row.c[7].v : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png', // Foto di Kolom G
-                    jejak: row.c[8] ? row.c[8].v : 'Belum ada jenjang karier.', // Jejak di Kolom H
+                    foto: row.c[7] ? row.c[7].v : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+                    jejak: row.c[8] ? row.c[8].v : 'Belum ada jenjang karier.',
                     elID: "qr-" + i
                 };
                 allMembers.push(member);
@@ -380,7 +378,6 @@
                         <td><span class="status-tag ${member.stat.toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni'}">${member.stat}</span></td>
                         <td><div id="${member.elID}"></div></td>
                         <td><button class="btn-download" onclick="event.stopPropagation(); dl('${member.elID}', '${member.nama}')">Unduh</button></td>
-                        
                     </tr>`;
             });
 
@@ -388,94 +385,63 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('mainTable').style.display = 'table';
 
-            // Cari bagian ini dan ganti angkanya
             allMembers.forEach(m => {
                 new QRCode(document.getElementById(m.elID), { 
-                    // Link diganti ke halaman perantara
                     text: `${currentUrl}?view=pilihan&id=${m.uid}`, 
-                    width: 300,
-                    height: 300,
-                    colorDark : "#132c47",
-                    colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.M // Level M bikin pola makin renggang/simpel
+                    width: 300, height: 300,
+                    colorDark : "#132c47", colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.M 
                 });
             });
-
-           
-
         } catch (e) { document.getElementById('loading').innerText = "Gagal memuat data."; }
     }
 
     function showProfile(uid) {
         const m = allMembers.find(x => x.uid === uid);
         if (m) {
-            // Mengisi Nama dan UID di Header Modal
             document.getElementById('m-nama').innerText = m.nama;
             document.getElementById('m-uid').innerText = "UID: " + m.uid;
-            
-            // Mengisi Foto (Kolom G)
             document.getElementById('m-foto').src = m.foto;
-            
-            // Mengisi Kotak-kotak Detail Informasi (Divisi, Jabatan, dll)
             document.getElementById('m-jab').innerText = m.jab;
-            document.getElementById('m-divs').innerText = m.divs; // Ini ID baru untuk Divisi
+            document.getElementById('m-divs').innerText = m.divs;
             document.getElementById('m-thn').innerText = m.thn;
             document.getElementById('m-masa').innerText = m.masa;
-            document.getElementById('m-stat').innerText = m.stat; // Status masuk ke kotak info
-            
-            // Mengisi Rekam Jejak (Kolom H)
+            document.getElementById('m-stat').innerText = m.stat;
             document.getElementById('m-jejak').innerHTML = m.jejak.replace(/\n/g, '<br>');
-            
-            // Menampilkan Modal
             document.getElementById('profileModal').style.display = 'block';
+            document.getElementById('scanMenu').style.display = 'none';
         }
     }
 
-        function printQR(id, name) {
-        // 1. Ambil data gambar dari canvas QR yang sudah tergenerate (300px)
-        const canvas = document.getElementById(id).querySelector('canvas');
-        const dataUrl = canvas.toDataURL("image/png");
-    
-        // 2. Buat elemen sementara untuk area print
-        const printWindow = window.open('', '_blank');
-        printWindow.document.write(`
-            <html>
-            <head>
-                <title>Print QR - ${name}</title>
-                <style>
-                    body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-                    img { width: 300px; height: 300px; } /* Memastikan ukuran fisik di print */
-                </style>
-            </head>
-            <body onload="window.print(); window.close();">
-                <img src="${dataUrl}" />
-            </body>
-            </html>
-        `);
-        printWindow.document.close();
-    }
-    
-    function closeModal() { document.getElementById('profileModal').style.display = 'none'; }
-    window.onclick = (e) => { if(e.target == document.getElementById('profileModal')) closeModal(); }
-
-        
-       function bukaValidasi() {
+    async function startApp() {
+        await getData(); 
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
-        
-        // Tutup menu pilihan dulu
+        const view = urlParams.get('view');
+
+        // Reset semua modal ke posisi tertutup dulu
         document.getElementById('scanMenu').style.display = 'none';
-        
-        // Baru panggil profilnya
+        document.getElementById('profileModal').style.display = 'none';
+
         if (id) {
-            showProfile(id);
+            if (view === 'pilihan') {
+                document.getElementById('scanMenu').style.setProperty('display', 'flex', 'important');
+            } else {
+                showProfile(id);
+            }
         }
+        // Kalau ga ada ID (link bersih), dia cuma diam dan nampilin tabel (Data sudah dipanggil di awal)
     }
-    
-    function tutupMenu() {
-        document.getElementById('scanMenu').style.display = 'none';
+
+    window.addEventListener('DOMContentLoaded', startApp);
+
+    // Fungsi utilitas lainnya (close, download, search) tetap sama
+    function closeModal() { document.getElementById('profileModal').style.display = 'none'; }
+    function tutupMenu() { document.getElementById('scanMenu').style.display = 'none'; }
+    function bukaValidasi() {
+        const id = new URLSearchParams(window.location.search).get('id');
+        if (id) showProfile(id);
     }
-            
     function dl(id, name) {
         const canvas = document.getElementById(id).querySelector('canvas');
         if (canvas) {
@@ -485,47 +451,18 @@
             link.click();
         }
     }
-
     document.getElementById('searchInput').oninput = (e) => {
         const val = e.target.value.toLowerCase();
         document.querySelectorAll('#memberData tr').forEach(tr => {
             tr.style.display = tr.innerText.toLowerCase().includes(val) ? '' : 'none';
         });
     };
-
-    // --- LOGIKA UTAMA: PENGATUR LALU LINTAS ---
-    async function startApp() {
-        // 1. Ambil data dari Sheets sampai selesai
-        await getData(); 
-    
-        // 2. Baca Parameter URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id');
-        const view = urlParams.get('view');
-    
-        // 3. Eksekusi Berdasarkan Link
-        if (id) {
-            if (view === 'pilihan') {
-                // JIKA SCAN QR: Munculkan menu kuning
-                const menu = document.getElementById('scanMenu');
-                if (menu) {
-                    menu.style.display = 'flex';
-                    document.getElementById('profileModal').style.display = 'none';
-                }
-            } else {
-                // JIKA LINK BIASA (Hanya ID): Langsung buka profil biru
-                showProfile(id);
-            }
-        } 
-        // Jika tidak ada ID, otomatis hanya menampilkan tabel database (default)
-    }
-    
-    // Jalankan hanya satu kali saat browser siap
-    window.addEventListener('DOMContentLoaded', startApp);
+    window.onclick = (e) => { if(e.target == document.getElementById('profileModal')) closeModal(); }
     
 </script>
 </body>
 </html>
+
 
 
 
