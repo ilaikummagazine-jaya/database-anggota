@@ -398,7 +398,7 @@
                         <td>${member.masa}</td>
                         <td><span class="status-tag ${member.stat.toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni'}">${member.stat}</span></td>
                         <td><div id="${member.elID}"></div></td>
-                        <td><button class="btn-download" onclick="event.stopPropagation(); dl('${member.elID}', '${member.nama}')">Unduh</button></td>
+                        <td><button class="btn-download" onclick="event.stopPropagation(); dl('${member.uid}', '${member.nama}')">Unduh Kode QR</button></td>
                     </tr>`;
             });
 
@@ -414,20 +414,7 @@
                 showProfile(id);
             }
 
-            // Generate QR Code di akhir agar tidak menghambat fungsi lain
-            setTimeout(() => {
-                allMembers.forEach(m => {
-                    const el = document.getElementById(m.elID);
-                    if(el && el.innerHTML === "") {
-                        new QRCode(el, { 
-                            text: `${currentUrl}?view=pilihan&id=${m.uid}`, 
-                            width: 300, height: 300,
-                            colorDark : "#132c47", colorLight : "#ffffff",
-                            correctLevel : QRCode.CorrectLevel.M 
-                        });
-                    }
-                });
-            }, 100);
+            
 
         } catch (e) { document.getElementById('loading').innerText = "Gagal memuat data."; }
     }
@@ -459,14 +446,32 @@
         const id = new URLSearchParams(window.location.search).get('id');
         if (id) showProfile(id);
     }
-    function dl(id, name) {
-        const canvas = document.getElementById(id).querySelector('canvas');
-        if (canvas) {
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL("image/png");
-            link.download = `QR_${name}.png`;
-            link.click();
-        }
+    function dl(uid, name) {
+        // 1. Buat kontainer sementara (gaib/hidden) untuk merender QR
+        const tempDiv = document.createElement('div');
+        
+        // 2. Generate QR Code ke dalam kontainer sementara tersebut
+        new QRCode(tempDiv, {
+            text: `${currentUrl}?view=pilihan&id=${uid}`,
+            width: 500, // Ukuran lebih besar agar hasil download tajam
+            height: 500,
+            colorDark: "#132c47",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H // Level koreksi tinggi agar aman discan
+        });
+    
+        // 3. Tunggu sebentar sampai library selesai menggambar (render)
+        setTimeout(() => {
+            const canvas = tempDiv.querySelector('canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL("image/png");
+                link.download = `QR_ILAIKUM_${name}_${uid}.png`;
+                link.click();
+            }
+            // 4. Hapus kontainer sementara dari memori
+            tempDiv.remove();
+        }, 100);
     }
     document.getElementById('searchInput').oninput = (e) => {
         const val = e.target.value.toLowerCase();
@@ -497,6 +502,7 @@
 </script>
 </body>
 </html>
+
 
 
 
