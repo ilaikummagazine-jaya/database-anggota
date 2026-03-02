@@ -275,7 +275,7 @@
                     <th>Tahun Bergabung</th>
                     <th>Masa Aktif</th>
                     <th>Status</th>
-                    <th>Aksi</th>
+                    <th>Kode QR</th>
                 </tr>
             </thead>
             <tbody id="memberData"></tbody>
@@ -320,9 +320,9 @@
             
             <a href="https://instagram.com/ilaikumofficial" target="_blank" class="btn-pilihan" style="background: #ffcf00; color: #132c47;">KUNJUNGI INSTAGRAM KAMI</a>
             
-           <button onclick="bukaGmail()" class="btn-pilihan" style="background: #ffffff; color: #132c47;">
-                LAPOR VIA EMAIL
-            </button>
+          <button onclick="const id = new URLSearchParams(window.location.search).get('id'); bukaGmail(id)" class="btn-pilihan" style="background: #ffffff; color: #132c47;">
+              LAPOR VIA EMAIL
+          </button>
             
         </div>
 
@@ -473,27 +473,29 @@
     };
     window.onclick = (e) => { if(e.target == document.getElementById('profileModal')) closeModal(); }
 
-   function bukaGmail() {
+   function bukaGmail(uid) {
         const tujuan = "magazineilaikum@gmail.com";
-        const subjek = encodeURIComponent("LAPOR MASALAH KARTU ANGGOTA");
-        const isi = encodeURIComponent("Halo Admin Ilaikum,\n\nSaya ingin melaporkan masalah terkait kartu pers.");
+        // Jika UID tidak ada (misal buka dari menu utama), kita kasih strip atau kosongin
+        const idAnggota = uid ? uid : "[Isi UID Anda]";
+        
+        const subjek = encodeURIComponent("LAPOR MASALAH KARTU ANGGOTA - " + idAnggota);
+        const isi = encodeURIComponent(`Halo Admin Ilaikum,\n\nSaya ingin melaporkan masalah seputar kartu dengan UID ${idAnggota}.\n\n(Tulis pesan custom Anda di sini):\n`);
+        
         const urlGmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${tujuan}&su=${subjek}&body=${isi}`;
         
-        // 1. Coba buka tab Gmail dulu
         const win = window.open(urlGmail, '_blank');
         
-        // 2. Cek apakah tab berhasil dibuka (tanpa langsung panggil mailto)
         setTimeout(() => {
             if (!win || win.closed || typeof win.closed == 'undefined') {
-                // Kalau tab Gmail GAGAL terbuka (misal pop-up diblokir total), baru buka mailto
                 window.location.href = `mailto:${tujuan}?subject=${subjek}&body=${isi}`;
             }
-        }, 500); // Jeda 0,5 detik
+        }, 500);
     }
     
 </script>
 </body>
 </html>
+
 
 
 
