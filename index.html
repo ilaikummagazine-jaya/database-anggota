@@ -318,8 +318,6 @@
                         <td><button class="btn-download" onclick="event.stopPropagation(); dl('${member.elID}', '${member.nama}')">Unduh</button></td>
                         <td>
                             <button class="btn-download" onclick="event.stopPropagation(); dl('${member.elID}', '${member.nama}')">Unduh</button>
-                            
-                            <button class="btn-download" style="background:#132c47; color:white; margin-top:5px;" onclick="event.stopPropagation(); printQR('${member.elID}', '${member.nama}')">Print</button>
                         </td>
                         
                     </tr>`;
@@ -402,10 +400,12 @@
     
     function dl(id, name) {
         const canvas = document.getElementById(id).querySelector('canvas');
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL();
-        link.download = `QR_${name}.png`;
-        link.click();
+        if (canvas) {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL("image/png");
+            link.download = `QR_${name}.png`;
+            link.click();
+        }
     }
 
     document.getElementById('searchInput').oninput = (e) => {
@@ -419,6 +419,7 @@
 </script>
 </body>
 </html>
+
 
 
 
