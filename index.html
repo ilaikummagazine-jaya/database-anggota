@@ -317,7 +317,7 @@
     </div>
 </div>
 
-<div id="scanMenu" class="modal" style="display:none; position:fixed; z-index:99999; left:0; top:0; width:100%; height:100%; background:rgba(13, 27, 42, 0.98); display:flex; justify-content:center; align-items:center; padding: 20px; box-sizing: border-box;">
+<div id="scanMenu" style="display:none; position:fixed; ...">
     
     <div class="modal-content" style="width: 100%; max-width: 350px; background: #132c47; border: 2px solid #ffcf00; border-radius: 20px; padding: 30px; box-sizing: border-box; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         
@@ -463,24 +463,28 @@
     // Cek saat halaman dibuka
     window.onload = function() {
         const urlParams = new URLSearchParams(window.location.search);
-        const view = urlParams.get('view');
-        const id = urlParams.get('id');
+        const view = urlParams.get('view'); // Cek apakah ada tulisan 'pilihan'
+        const id = urlParams.get('id');     // Cek ID anggotanya
     
-        // 1. CEK DULU: Apakah ada parameter 'view=pilihan'?
+        // LOGIKA UTAMA:
         if (view === 'pilihan' && id) {
-            console.log("Mode pilihan terdeteksi untuk ID:", id);
-            
-            // Munculkan modal menu pilihan
+            // JIKA LEWAT BARCODE (ada view=pilihan)
+            // Munculkan menu pilihan, sembunyikan database dulu
             const menu = document.getElementById('scanMenu');
-            if(menu) {
-                menu.style.display = 'flex'; // Pakai flex supaya kontennya ke tengah
+            if (menu) {
+                menu.style.display = 'flex'; 
             }
         } 
-        // 2. JIKA TIDAK ADA 'pilihan', TAPI ADA 'id', baru buka profil langsung
-        else if (id) {
+        else if (id && !view) {
+            // JIKA LANGSUNG KE ID (misal buat share link profil)
             showProfile(id);
         }
-    }
+        else {
+            // JIKA MASUK WEB BIASA (Tanpa parameter apa-apa)
+            // Jangan lakuin apa-apa, biarin user liat database
+            console.log("Welcome to Database Anggota!");
+        }
+    };
         
        function bukaValidasi() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -543,6 +547,7 @@
 </script>
 </body>
 </html>
+
 
 
 
