@@ -490,8 +490,13 @@
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
         
-        document.getElementById('scanMenu').style.display = 'none'; // Tutup menu pilihan
-        showProfile(id); // Baru jalankan fungsi tampilkan profil
+        // Tutup menu pilihan dulu
+        document.getElementById('scanMenu').style.display = 'none';
+        
+        // Baru panggil profilnya
+        if (id) {
+            showProfile(id);
+        }
     }
     
     function tutupMenu() {
@@ -516,9 +521,33 @@
     };
 
     window.onload = getData;
+
+        // Pastikan ini ditaruh di paling bawah script, atau di dalam window.onload
+    window.addEventListener('load', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const view = urlParams.get('view');
+        const id = urlParams.get('id');
+    
+        if (id) {
+            if (view === 'pilihan') {
+                // BERHENTI DI SINI! Munculkan menu pilihan saja.
+                const menu = document.getElementById('scanMenu');
+                if (menu) {
+                    menu.style.display = 'flex'; 
+                    // Kita paksa tutup profile kalau-kalau dia sempat kebuka
+                    const profileCard = document.getElementById('profileCard');
+                    if (profileCard) profileCard.style.display = 'none';
+                }
+            } else {
+                // Jika cuma ada ID tanpa view=pilihan, baru jalankan profil
+                showProfile(id);
+            }
+        }
+    });
 </script>
 </body>
 </html>
+
 
 
 
