@@ -134,7 +134,7 @@
 
         .btn-pilihan {
             display: block;
-            width: 100%;
+            width: 100%; /* Ini kunci agar semua panjangnya sama */
             padding: 15px;
             margin: 10px 0;
             border: none;
@@ -142,10 +142,12 @@
             background: #ffcf00;
             color: #132c47;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 15px;
             text-decoration: none;
             cursor: pointer;
             transition: 0.3s;
+            box-sizing: border-box; /* Biar padding gak nambah lebar keluar kotak */
+            text-align: center;
         }
         .btn-pilihan:hover { transform: scale(1.05); }
         
@@ -318,15 +320,16 @@
 </div>
 
 <div id="scanMenu" style="display:none; position:fixed; z-index:99999; left:0; top:0; width:100%; height:100%; background:rgba(13, 27, 42, 0.98); justify-content:center; align-items:center;">
-    
-    <div class="modal-content" style="width: 100%; max-width: 350px; background: #132c47; border: 2px solid #ffcf00; border-radius: 20px; padding: 30px; box-sizing: border-box; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+    <div class="modal-content" style="width: 90%; max-width: 350px; background: #132c47; border: 2px solid #ffcf00; border-radius: 20px; padding: 30px; box-sizing: border-box; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         
-        <h2 style="color: #ffcf00; margin-top: 0; font-size: 22px;">MENU LAPOR DAN VALIDASI</h2>
-        <p style="color: #cbd5e0; font-size: 14px; margin-bottom: 25px;">Hubungi kami jika terdapat masalah pada penggunaan kartu ini</p>
+        <h2 style="color: #ffcf00; margin-top: 0; font-size: 20px;">MENU LAPOR DAN VALIDASI</h2>
+        <p style="color: #cbd5e0; font-size: 13px; margin-bottom: 25px;">Hubungi kami jika terdapat masalah pada penggunaan kartu ini</p>
         
-        <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; flex-direction: column; gap: 5px;">
             <button onclick="bukaValidasi()" class="btn-pilihan">🔍 VALIDASI ANGGOTA</button>
+            
             <a href="https://instagram.com/majalah_lo" target="_blank" class="btn-pilihan" style="background: #e1306c; color: white;">📸 HUBUNGI KAMI (IG)</a>
+            
             <a href="mailto:redaksi@ilaikum.com" class="btn-pilihan" style="background: #ffffff; color: #132c47;">✉️ LAPOR VIA EMAIL</a>
         </div>
 
@@ -472,6 +475,7 @@
 </script>
 </body>
 </html>
+
 
 
 
