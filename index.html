@@ -180,19 +180,10 @@
         .close-btn { position: absolute; right: 20px; top: 15px; font-size: 25px; color: white; cursor: pointer; z-index: 10; }
 
         /* Mengatur tampilan QR di kolom tabel */
-        div[id^="qr-"] canvas, div[id^="qr-"] img {
-            width: 80px !important;  /* Di layar web tetep kecil biar rapi */
-            height: 80px !important;
-            margin: 0 auto;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            display: block;
-        }
+
         
         /* Lebar kolom QR di tabel */
-        table td:nth-child(8) { 
-            width: 100px; 
-        }
+
 
         /* --- CSS KHUSUS PRINT --- */
             @media print {
@@ -396,7 +387,6 @@
                         <td>${member.thn}</td>
                         <td>${member.masa}</td>
                         <td><span class="status-tag ${member.stat.toLowerCase().includes('aktif') ? 'status-aktif' : 'status-alumni'}">${member.stat}</span></td>
-                        <td><div id="${member.elID}"></div></td>
                         <td><button class="btn-download" onclick="event.stopPropagation(); dl('${member.uid}', '${member.nama}')">Unduh Kode QR</button></td>
                     </tr>`;
             });
@@ -460,18 +450,7 @@
         });
     
         // 3. Tunggu sebentar sampai library selesai menggambar (render)
-        setTimeout(() => {
-            const canvas = tempDiv.querySelector('canvas');
-            if (canvas) {
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL("image/png");
-                link.download = `QR_ILAIKUM_${name}_${uid}.png`;
-                link.click();
-            }
-            // 4. Hapus kontainer sementara dari memori
-            tempDiv.remove();
-        }, 100);
-    }
+        
     document.getElementById('searchInput').oninput = (e) => {
         const val = e.target.value.toLowerCase();
         document.querySelectorAll('#memberData tr').forEach(tr => {
@@ -501,6 +480,7 @@
 </script>
 </body>
 </html>
+
 
 
 
