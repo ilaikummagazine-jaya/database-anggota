@@ -330,11 +330,10 @@
             
             <a href="https://instagram.com/ilaikumofficial" target="_blank" class="btn-pilihan" style="background: #ffcf00; color: #132c47;">KUNJUNGI INSTAGRAM KAMI</a>
             
-           <a href="mailto:redaksi@ilaikum.com?subject=LAPOR%20MASALAH%20KARTU&body=Halo%20Admin,%20saya%20ingin%20lapor..." 
-               class="btn-pilihan" 
-               style="background: #ffcf00; color: #132c47;">
-               LAPOR VIA EMAIL
-            </a>
+           <button onclick="bukaGmail()" class="btn-pilihan" style="background: #ffffff; color: #132c47;">
+                LAPOR VIA EMAIL
+            </button>
+            
         </div>
 
         <button onclick="tutupMenu()" style="margin-top: 25px; background: transparent; border: none; color: #999; cursor: pointer; text-decoration: underline; font-size: 13px;">Tutup Menu</button>
@@ -477,26 +476,28 @@
     };
     window.onclick = (e) => { if(e.target == document.getElementById('profileModal')) closeModal(); }
 
-    function bukaGmail() {
-        // URL Gmail Compose (Tulis Surat)
+   function bukaGmail() {
         const tujuan = "magazineilaikum@gmail.com";
         const subjek = encodeURIComponent("LAPOR MASALAH KARTU ANGGOTA");
-        const isi = encodeURIComponent("Halo Admin Ilaikum,\n\nSaya ingin melaporkan masalah terkait kartu pers ");
+        // Ambil UID dari URL agar admin tau kartu siapa yang bermasalah
+        const idParam = new URLSearchParams(window.location.search).get('id') || "";
+        const isi = encodeURIComponent("Halo Admin Ilaikum,\n\nSaya ingin melaporkan masalah terkait kartu pers dengan UID: " + idParam);
         
         const urlGmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${tujuan}&su=${subjek}&body=${isi}`;
         
-        // Trik khusus Chrome: Buka di window baru agar tidak kena blokir "Empty Page"
-        const win = window.open(urlGmail, '_blank');
+        // Gunakan mousedown/click event yang bersih
+        const win = window.open(urlGmail, '_blank', 'noopener,noreferrer');
         
-        // Jika window gagal dibuka (diblokir pop-up Chrome), pakai cara cadangan mailto
-        if (!win || win.closed || typeof win.closed == 'undefined') {
-            window.location.href = `mailto:${tujuan}?subject=${subjek}&body=${isi}`;
+        // Jika masih gagal (diblokir), baru lempar ke mailto
+        if (!win) {
+            window.location.href = `mailto:${tujuan}?subject=LAPOR%20KARTU&body=UID:%20${idParam}`;
         }
     }
     
 </script>
 </body>
 </html>
+
 
 
 
