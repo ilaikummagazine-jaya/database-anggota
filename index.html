@@ -479,24 +479,25 @@
    function bukaGmail() {
         const tujuan = "magazineilaikum@gmail.com";
         const subjek = encodeURIComponent("LAPOR MASALAH KARTU ANGGOTA");
-        // Ambil UID dari URL agar admin tau kartu siapa yang bermasalah
-        const idParam = new URLSearchParams(window.location.search).get('id') || "";
-        const isi = encodeURIComponent("Halo Admin Ilaikum,\n\nSaya ingin melaporkan masalah terkait kartu pers dengan UID: " + idParam);
-        
+        const isi = encodeURIComponent("Halo Admin Ilaikum,\n\nSaya ingin melaporkan masalah terkait kartu pers.");
         const urlGmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${tujuan}&su=${subjek}&body=${isi}`;
         
-        // Gunakan mousedown/click event yang bersih
-        const win = window.open(urlGmail, '_blank', 'noopener,noreferrer');
+        // 1. Coba buka tab Gmail dulu
+        const win = window.open(urlGmail, '_blank');
         
-        // Jika masih gagal (diblokir), baru lempar ke mailto
-        if (!win) {
-            window.location.href = `mailto:${tujuan}?subject=LAPOR%20KARTU&body=UID:%20${idParam}`;
-        }
+        // 2. Cek apakah tab berhasil dibuka (tanpa langsung panggil mailto)
+        setTimeout(() => {
+            if (!win || win.closed || typeof win.closed == 'undefined') {
+                // Kalau tab Gmail GAGAL terbuka (misal pop-up diblokir total), baru buka mailto
+                window.location.href = `mailto:${tujuan}?subject=${subjek}&body=${isi}`;
+            }
+        }, 500); // Jeda 0,5 detik
     }
     
 </script>
 </body>
 </html>
+
 
 
 
