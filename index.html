@@ -332,8 +332,8 @@
             
            <a href="mailto:redaksi@ilaikum.com?subject=LAPOR%20MASALAH%20KARTU&body=Halo%20Admin,%20saya%20ingin%20lapor..." 
                class="btn-pilihan" 
-               style="background: #ffffff; color: #132c47;">
-               ✉️ LAPOR VIA EMAIL
+               style="background: #ffcf00; color: #132c47;">
+               LAPOR VIA EMAIL
             </a>
         </div>
 
@@ -476,9 +476,28 @@
         });
     };
     window.onclick = (e) => { if(e.target == document.getElementById('profileModal')) closeModal(); }
+
+    function bukaGmail() {
+        // URL Gmail Compose (Tulis Surat)
+        const tujuan = "magazineilaikum@gmail.com";
+        const subjek = encodeURIComponent("LAPOR MASALAH KARTU ANGGOTA");
+        const isi = encodeURIComponent("Halo Admin Ilaikum,\n\nSaya ingin melaporkan masalah terkait kartu pers ");
+        
+        const urlGmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${tujuan}&su=${subjek}&body=${isi}`;
+        
+        // Trik khusus Chrome: Buka di window baru agar tidak kena blokir "Empty Page"
+        const win = window.open(urlGmail, '_blank');
+        
+        // Jika window gagal dibuka (diblokir pop-up Chrome), pakai cara cadangan mailto
+        if (!win || win.closed || typeof win.closed == 'undefined') {
+            window.location.href = `mailto:${tujuan}?subject=${subjek}&body=${isi}`;
+        }
+    }
+    
 </script>
 </body>
 </html>
+
 
 
 
