@@ -340,6 +340,21 @@
     const currentUrl = window.location.origin + window.location.pathname;
     let allMembers = [];
 
+    // --- 1. PRIORITAS UTAMA: CEK URL SECEPAT MUNGKIN ---
+    function checkUrlImmediately() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        const view = urlParams.get('view');
+
+        // Sembunyikan semua secara paksa di awal
+        document.getElementById('scanMenu').style.display = 'none';
+        document.getElementById('profileModal').style.display = 'none';
+
+        if (id && view === 'pilihan') {
+            document.getElementById('scanMenu').style.setProperty('display', 'flex', 'important');
+        }
+    }
+
     async function getData() {
         try {
             const res = await fetch(url);
@@ -385,14 +400,29 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('mainTable').style.display = 'table';
 
-            allMembers.forEach(m => {
-                new QRCode(document.getElementById(m.elID), { 
-                    text: `${currentUrl}?view=pilihan&id=${m.uid}`, 
-                    width: 300, height: 300,
-                    colorDark : "#132c47", colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.M 
+            // Cek sekali lagi apakah harus buka profil otomatis (setelah data ready)
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            const view = urlParams.get('view');
+            if (id && view !== 'pilihan') {
+                showProfile(id);
+            }
+
+            // Generate QR Code di akhir agar tidak menghambat fungsi lain
+            setTimeout(() => {
+                allMembers.forEach(m => {
+                    const el = document.getElementById(m.elID);
+                    if(el && el.innerHTML === "") {
+                        new QRCode(el, { 
+                            text: `${currentUrl}?view=pilihan&id=${m.uid}`, 
+                            width: 300, height: 300,
+                            colorDark : "#132c47", colorLight : "#ffffff",
+                            correctLevel : QRCode.CorrectLevel.M 
+                        });
+                    }
                 });
-            });
+            }, 100);
+
         } catch (e) { document.getElementById('loading').innerText = "Gagal memuat data."; }
     }
 
@@ -413,29 +443,10 @@
         }
     }
 
-    async function startApp() {
-        await getData(); 
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id');
-        const view = urlParams.get('view');
+    // --- EKSEKUSI ---
+    checkUrlImmediately(); // Matikan menu dulu
+    getData(); // Baru ambil data
 
-        // Reset semua modal ke posisi tertutup dulu
-        document.getElementById('scanMenu').style.display = 'none';
-        document.getElementById('profileModal').style.display = 'none';
-
-        if (id) {
-            if (view === 'pilihan') {
-                document.getElementById('scanMenu').style.setProperty('display', 'flex', 'important');
-            } else {
-                showProfile(id);
-            }
-        }
-        // Kalau ga ada ID (link bersih), dia cuma diam dan nampilin tabel (Data sudah dipanggil di awal)
-    }
-
-    window.addEventListener('DOMContentLoaded', startApp);
-
-    // Fungsi utilitas lainnya (close, download, search) tetap sama
     function closeModal() { document.getElementById('profileModal').style.display = 'none'; }
     function tutupMenu() { document.getElementById('scanMenu').style.display = 'none'; }
     function bukaValidasi() {
@@ -458,10 +469,10 @@
         });
     };
     window.onclick = (e) => { if(e.target == document.getElementById('profileModal')) closeModal(); }
-    
 </script>
 </body>
 </html>
+
 
 
 
