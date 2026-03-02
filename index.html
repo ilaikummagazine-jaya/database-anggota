@@ -317,7 +317,7 @@
     </div>
 </div>
 
-<div id="scanMenu" class="modal" style="display:none; background: rgba(19, 44, 71, 0.95);">
+<div id="scanMenu" class="modal" style="display:none; position:fixed; z-index:99999; left:0; top:0; width:100%; height:100%; background:rgba(19, 44, 71, 0.95);">
     <div class="modal-content" style="max-width: 400px; text-align: center; padding: 30px;">
         <h2 style="color: #ffcf00;">MENU ANGGOTA</h2>
         <p style="color: white; margin-bottom: 25px;">Silakan pilih aksi yang ingin dilakukan:</p>
@@ -471,25 +471,26 @@
         const id = urlParams.get('id');
     
         if (view === 'pilihan' && id) {
-            // Jika discan dari QR, munculkan menu pilihan
+            // Jika ada view=pilihan, tampilkan menu dan JANGAN buka profil dulu
             document.getElementById('scanMenu').style.display = 'block';
         } else if (id) {
-            // Jika langsung buka ID (tanpa pilihan), langsung tampilkan profil
+            // Jika cuma ada ID (tanpa kata pilihan), langsung buka profil
             showProfile(id);
         }
     }
-    
-    function bukaValidasi() {
+        
+       function bukaValidasi() {
         const urlParams = new URLSearchParams(window.location.search);
         const id = urlParams.get('id');
-        tutupMenu();
-        showProfile(id); // Memanggil fungsi floating profil lo yang sudah ada
+        
+        document.getElementById('scanMenu').style.display = 'none'; // Tutup menu pilihan
+        showProfile(id); // Baru jalankan fungsi tampilkan profil
     }
     
     function tutupMenu() {
         document.getElementById('scanMenu').style.display = 'none';
     }
-        
+            
     function dl(id, name) {
         const canvas = document.getElementById(id).querySelector('canvas');
         if (canvas) {
@@ -511,6 +512,7 @@
 </script>
 </body>
 </html>
+
 
 
 
