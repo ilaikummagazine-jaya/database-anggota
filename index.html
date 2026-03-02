@@ -317,29 +317,25 @@
     </div>
 </div>
 
-<div id="scanMenu" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(13, 27, 42, 0.98); z-index:999999; justify-content:center; align-items:center;">
-    <div class="modal-content" style="max-width: 400px; text-align: center; padding: 30px;">
-        <h2 style="color: #ffcf00;">MENU ANGGOTA</h2>
-        <p style="color: white; margin-bottom: 25px;">Silakan pilih aksi yang ingin dilakukan:</p>
+<div id="scanMenu" class="modal" style="display:none; position:fixed; z-index:99999; left:0; top:0; width:100%; height:100%; background:rgba(13, 27, 42, 0.98); display:flex; justify-content:center; align-items:center; padding: 20px; box-sizing: border-box;">
+    
+    <div class="modal-content" style="width: 100%; max-width: 350px; background: #132c47; border: 2px solid #ffcf00; border-radius: 20px; padding: 30px; box-sizing: border-box; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         
-        <button onclick="bukaValidasi()" class="btn-pilihan">
-            🔍 VALIDASI ANGGOTA
-        </button>
+        <h2 style="color: #ffcf00; margin-top: 0; font-size: 22px;">MENU LAPOR DAN VALIDASI</h2>
+        <p style="color: #cbd5e0; font-size: 14px; margin-bottom: 25px;">Hubungi kami jika terdapat masalah pada penggunaan kartu ini</p>
         
-        <a href="https://instagram.com/ilaikumofficial" target="_blank" class="btn-pilihan" style="background: #e1306c; color: white;">
-            📸 HUBUNGI KAMI (IG)
-        </a>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <button onclick="bukaValidasi()" class="btn-pilihan">🔍 VALIDASI ANGGOTA</button>
+            
+            <a href="https://instagram.com/majalah_lo" target="_blank" class="btn-pilihan" style="background: #e1306c; color: white;">📸 HUBUNGI KAMI (IG)</a>
+            
+            <a href="mailto:redaksi@ilaikum.com" class="btn-pilihan" style="background: #ffffff; color: #132c47;">✉️ LAPOR VIA EMAIL</a>
+        </div>
 
-        <a href="mailto:magazineilaikum@gmail.com?subject=Laporan Kartu Anggota&body=Hai Ilaikum!" 
-           class="btn-pilihan" 
-           style="background: #ffffff; color: #132c47; text-decoration: none; display: block;">
-            ✉️ LAPOR VIA EMAIL
-        </a>
-
-        <button onclick="tutupMenu()" style="margin-top: 20px; background: none; border: 1px solid white; color: white; padding: 5px 15px; border-radius: 20px; cursor: pointer;">Tutup</button>
+        <button onclick="tutupMenu()" style="margin-top: 25px; background: transparent; border: none; color: #999; cursor: pointer; text-decoration: underline; font-size: 13px;">Tutup Menu</button>
     </div>
 </div>
-
+    
 <script>
     const SHEET_ID = '1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig';
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=data`;
@@ -547,6 +543,7 @@
 </script>
 </body>
 </html>
+
 
 
 
