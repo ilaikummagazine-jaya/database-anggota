@@ -460,31 +460,6 @@
     function closeModal() { document.getElementById('profileModal').style.display = 'none'; }
     window.onclick = (e) => { if(e.target == document.getElementById('profileModal')) closeModal(); }
 
-    // Cek saat halaman dibuka
-    window.onload = function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const view = urlParams.get('view'); // Cek apakah ada tulisan 'pilihan'
-        const id = urlParams.get('id');     // Cek ID anggotanya
-    
-        // LOGIKA UTAMA:
-        if (view === 'pilihan' && id) {
-            // JIKA LEWAT BARCODE (ada view=pilihan)
-            // Munculkan menu pilihan, sembunyikan database dulu
-            const menu = document.getElementById('scanMenu');
-            if (menu) {
-                menu.style.display = 'flex'; 
-            }
-        } 
-        else if (id && !view) {
-            // JIKA LANGSUNG KE ID (misal buat share link profil)
-            showProfile(id);
-        }
-        else {
-            // JIKA MASUK WEB BIASA (Tanpa parameter apa-apa)
-            // Jangan lakuin apa-apa, biarin user liat database
-            console.log("Welcome to Database Anggota!");
-        }
-    };
         
        function bukaValidasi() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -520,33 +495,10 @@
         });
     };
 
-    window.onload = getData;
-
-        // Pastikan ini ditaruh di paling bawah script, atau di dalam window.onload
-    window.addEventListener('load', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const view = urlParams.get('view');
-        const id = urlParams.get('id');
-    
-        if (id) {
-            if (view === 'pilihan') {
-                // BERHENTI DI SINI! Munculkan menu pilihan saja.
-                const menu = document.getElementById('scanMenu');
-                if (menu) {
-                    menu.style.display = 'flex'; 
-                    // Kita paksa tutup profile kalau-kalau dia sempat kebuka
-                    const profileCard = document.getElementById('profileCard');
-                    if (profileCard) profileCard.style.display = 'none';
-                }
-            } else {
-                // Jika cuma ada ID tanpa view=pilihan, baru jalankan profil
-                showProfile(id);
-            }
-        }
-    });
 </script>
 </body>
 </html>
+
 
 
 
