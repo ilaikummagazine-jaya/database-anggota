@@ -68,11 +68,14 @@
             border-collapse: collapse; 
         }
         
-        thead { background: #132c47; color: white; position: sticky; top: 0; }
+        thead { background: #132c47; color: white; position: sticky; top: 0; z-index: 10; }
         th { padding: 15px; text-align: center; font-size: 13px; text-transform: uppercase; }
         td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; vertical-align: middle; }
         tr { cursor: pointer; transition: 0.2s; }
-        tr:hover { background: #f0f4f8; }
+        
+        tbody tr:hover { 
+            background: #f0f4f8; 
+        }
 
         /* Column Alignment */
         table td:nth-child(2) { text-align: left; font-weight: bold; }
@@ -495,6 +498,7 @@
 </script>
 </body>
 </html>
+
 
 
 
