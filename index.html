@@ -135,22 +135,47 @@
             color: #fff;
         }
 
-        .btn-pilihan {
-            display: block;
-            width: 100%; /* Ini kunci agar semua panjangnya sama */
-            padding: 15px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 12px;
+
+        /* Kontainer pembungkus kotak logo + tombol */
+        .action-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+        
+        /* Kotak Logo di sebelah kiri */
+        .icon-box {
+            width: 60px;
+            height: 60px;
             background: #ffcf00;
-            color: #132c47;
-            font-weight: bold;
-            font-size: 15px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: 0.3s;
-            box-sizing: border-box; /* Biar padding gak nambah lebar keluar kotak */
-            text-align: center;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0; /* Agar kotak tidak gepeng */
+        }
+        
+        .icon-box img {
+            width: 35px;
+            height: 35px;
+            object-fit: contain;
+        }
+        
+        /* Kotak Putih khusus Gmail */
+        .icon-box.white-bg {
+            background: #ffffff;
+        }
+        
+        /* Sesuaikan tombol agar tidak terlalu lebar karena sudah ada kotak logo */
+        .btn-pilihan {
+            flex-grow: 1; /* Biar tombol memenuhi sisa ruang */
+            margin: 0;    /* Hapus margin bawaan karena sudah diatur gap */
+            height: 60px; /* Samakan tinggi dengan kotak logo */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .btn-pilihan:hover { transform: scale(1.05); }
         
@@ -312,24 +337,32 @@
     </div>
 </div>
 
-<div id="scanMenu" style="display:none; position:fixed; z-index:99999; left:0; top:0; width:100%; height:100%; background:rgba(13, 27, 42, 0.98); justify-content:center; align-items:center;">
-    <div class="modal-content" style="width: 90%; max-width: 350px; background: #132c47; border: 2px solid #ffcf00; border-radius: 20px; padding: 30px; box-sizing: border-box; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+<div id="scanMenu" style="display:none; position:fixed; z-index:99999; left:0; top:0; width:100%; height:100%; background:rgba(13, 27, 42, 0.9); justify-content:center; align-items:center;">
+    <div class="modal-content" style="width: 90%; max-width: 400px; background: #132c47; border: 3px solid #ffcf00; border-radius: 30px; padding: 40px 25px; text-align: center;">
         
-        <h2 style="color: #ffcf00; margin-top: 0; font-size: 20px;">MENU LAPOR DAN VERIFIKASI</h2>
-        <p style="color: #cbd5e0; font-size: 13px; margin-bottom: 25px;">Hubungi kami jika terdapat masalah pada penggunaan kartu ini</p>
+        <h2 style="color: #ffcf00; margin-top: 0; font-size: 24px; font-weight: 800; letter-spacing: 1px;">MENU LAPOR DAN VERIFIKASI</h2>
+        <p style="color: #ffffff; font-size: 14px; margin-bottom: 35px; opacity: 0.9;">Hubungi kami jika terdapat masalah pada penggunaan kartu ini</p>
         
-        <div style="display: flex; flex-direction: column; gap: 5px;">
-            <button onclick="bukaValidasi()" class="btn-pilihan">VERIFIKASI ANGGOTA</button>
-            
-            <a href="https://instagram.com/ilaikumofficial" target="_blank" class="btn-pilihan" style="background: #ffcf00; color: #132c47;">KUNJUNGI INSTAGRAM KAMI</a>
-            
-          <button onclick="const id = new URLSearchParams(window.location.search).get('id'); bukaGmail(id)" class="btn-pilihan" style="background: #ffffff; color: #132c47;">
-              KONTAK VIA EMAIL
-          </button>
-            
+        <div class="action-row">
+            <div class="icon-box">
+                <img src="ilaikum.png" alt="Logo">
+            </div>
+            <button onclick="bukaValidasi()" class="btn-pilihan" style="background: #ffcf00; color: #132c47;">VERIFIKASI ANGGOTA</button>
         </div>
 
-        <button onclick="tutupMenu()" style="margin-top: 25px; background: transparent; border: none; color: #999; cursor: pointer; text-decoration: underline; font-size: 13px;">Tutup Menu</button>
+        <div class="action-row">
+            <div class="icon-box">
+                <img src="instagram.png" alt="IG"> </div>
+            <a href="https://instagram.com/ilaikumofficial" target="_blank" class="btn-pilihan" style="background: #ffcf00; color: #132c47; text-decoration: none;">KUNJUNGI INSTAGRAM KAMI</a>
+        </div>
+
+        <div class="action-row">
+            <div class="icon-box white-bg">
+                <img src="gmail.png" alt="Gmail"> </div>
+            <button onclick="const id = new URLSearchParams(window.location.search).get('id'); bukaGmail(id)" class="btn-pilihan" style="background: #ffffff; color: #132c47;">KONTAK VIA EMAIL</button>
+        </div>
+
+        <p onclick="tutupMenu()" style="margin-top: 30px; color: #ffffff; cursor: pointer; font-size: 14px; opacity: 0.8;">Tutup menu</p>
     </div>
 </div>
     
@@ -498,6 +531,7 @@
 </script>
 </body>
 </html>
+
 
 
 
