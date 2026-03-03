@@ -137,17 +137,24 @@
 
 
         /* Kontainer baris agar kotak logo & tombol sejajar */
-       /* Efek saat baris (kotak logo + tombol) disentuh kursor */
-        .action-row:hover .icon-box,
+
+
+        /* Efek saat seluruh baris disentuh */
+        .action-row:hover .icon-box, 
         .action-row:hover .btn-pilihan {
-            transform: translateY(-3px); /* Memberikan efek melayang ke atas */
-            filter: brightness(1.1);      /* Membuat warna sedikit lebih cerah */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Memberikan bayangan halus */
+            /* Efek angkat dan membesar sedikit */
+            transform: translateY(-3px) scale(1.02);
+            
+            /* Tambahkan sedikit cahaya (glow) */
+            filter: brightness(1.05);
+            
+            /* Tambahkan bayangan di bawahnya */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
         
-        /* Tambahkan transition di class utama agar gerakannya mulus (Smooth) */
+        /* Pastikan transisinya halus di kedua elemen */
         .icon-box, .btn-pilihan {
-            transition: all 0.3s ease; 
+            transition: all 0.3s ease;
         }
         
         /* Kotak Logo di sebelah kiri */
@@ -160,6 +167,7 @@
             justify-content: center;
             align-items: center;
             flex-shrink: 0;
+            cursor: ponter;
         }
         
         .icon-box img {
@@ -171,6 +179,7 @@
         /* Kotak Putih khusus Gmail */
         .icon-box.white-bg {
             background: #ffffff;
+            cursor: poniter;
         }
         
         /* Gaya Tombol (Style tulisan disamakan dengan sebelumnya) */
@@ -555,6 +564,7 @@
 </script>
 </body>
 </html>
+
 
 
 
