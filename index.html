@@ -137,12 +137,17 @@
 
 
         /* Kontainer baris agar kotak logo & tombol sejajar */
-        .action-row {
-            display: flex;
-            align-items: center;
-            gap: 12px; /* Jarak antara kotak logo dan tombol */
-            margin-bottom: 15px;
-            width: 100%;
+       /* Efek saat baris (kotak logo + tombol) disentuh kursor */
+        .action-row:hover .icon-box,
+        .action-row:hover .btn-pilihan {
+            transform: translateY(-3px); /* Memberikan efek melayang ke atas */
+            filter: brightness(1.1);      /* Membuat warna sedikit lebih cerah */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Memberikan bayangan halus */
+        }
+        
+        /* Tambahkan transition di class utama agar gerakannya mulus (Smooth) */
+        .icon-box, .btn-pilihan {
+            transition: all 0.3s ease; 
         }
         
         /* Kotak Logo di sebelah kiri */
@@ -368,7 +373,7 @@
 
             <div class="action-row">
                 <div class="icon-box">
-                    <img src="instagram.png" alt="IG">
+                    <img src="instagram.png" alt="IG" style="width: 30px; height: 30px;>
                 </div>
                 <a href="https://instagram.com/ilaikumofficial" target="_blank" class="btn-pilihan" style="background: #ffcf00; color: #132c47;">KUNJUNGI INSTAGRAM KAMI</a>
             </div>
@@ -550,6 +555,7 @@
 </script>
 </body>
 </html>
+
 
 
 
