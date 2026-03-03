@@ -137,76 +137,65 @@
 
 
         /* Kontainer baris agar kotak logo & tombol sejajar */
-
-
-        /* Efek saat seluruh baris disentuh */
-        .action-row:hover .icon-box, 
-        .action-row:hover .btn-pilihan {
-            /* Efek angkat dan membesar sedikit */
-            transform: translateY(-3px) scale(1.02);
-            
-            /* Tambahkan sedikit cahaya (glow) */
-            filter: brightness(1.05);
-            
-            /* Tambahkan bayangan di bawahnya */
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        /* --- PERBAIKAN STRUKTUR BARIS --- */
+        .action-row {
+            display: flex; /* INI KUNCINYA: Biar berjejer ke kanan */
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            width: 100%;
+            cursor: pointer;
         }
         
-        /* Pastikan transisinya halus di kedua elemen */
-        .icon-box, .btn-pilihan {
-            transition: all 0.3s ease;
-        }
-        
-        /* Kotak Logo di sebelah kiri */
         .icon-box {
             width: 60px;
             height: 60px;
             background: #ffcf00;
-            border-radius: 15px; /* Tepi melengkung */
+            border-radius: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-shrink: 0;
-            cursor: ponter;
+            transition: all 0.3s ease;
         }
         
         .icon-box img {
-            width: 35px;
-            height: 35px;
+            width: 55px; /* Sesuai permintaanmu (gede) */
+            height: 55px;
             object-fit: contain;
         }
         
-        /* Kotak Putih khusus Gmail */
         .icon-box.white-bg {
             background: #ffffff;
-            cursor: poniter;
         }
         
-        /* Gaya Tombol (Style tulisan disamakan dengan sebelumnya) */
         .btn-pilihan {
-            flex-grow: 1;
+            flex-grow: 1; /* Biar tombol ngisi sisa ruang kanan */
             height: 60px;
             border: none;
-            border-radius: 15px; /* Tepi melengkung sama dengan kotak logo */
-            font-family: 'Montserrat', sans-serif; /* Font tetap Montserrat */
-            font-weight: 700; /* Tebal (Bold) */
+            border-radius: 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
             font-size: 14px;
-            text-transform: uppercase; /* Huruf kapital semua */
+            text-transform: uppercase;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
             text-decoration: none;
-            box-sizing: border-box;
+            padding: 0 10px;
         }
         
-        /* Efek Hover */
-        .btn-pilihan:hover {
-            transform: scale(1.02);
-            filter: brightness(0.9);
+        /* --- EFEK HOVER BARENGAN --- */
+        .action-row:hover .icon-box, 
+        .action-row:hover .btn-pilihan {
+            transform: translateY(-3px) scale(1.02);
+            filter: brightness(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
+
+        
         
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .info-item { background: #1e4571; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
@@ -373,25 +362,25 @@
         <p style="color: #ffffff; font-size: 13px; margin-bottom: 30px; opacity: 0.8;">Hubungi kami jika terdapat masalah pada penggunaan kartu ini</p>
         
         <div style="display: flex; flex-direction: column; width: 100%;">
-            <div class="action-row">
+            <div class="action-row" onclick="bukaValidasi()">
                 <div class="icon-box">
-                    <img src="logo biru.png" alt="Logo" style="width: 55px; height: 55px; transform: scale(1.2);">
+                    <img src="logo biru.png" alt="Logo">
                 </div>
-                <button onclick="bukaValidasi()" class="btn-pilihan" style="background: #ffcf00; color: #132c47;">VERIFIKASI ANGGOTA</button>
+                <button class="btn-pilihan" style="background: #ffcf00; color: #132c47;">VERIFIKASI ANGGOTA</button>
             </div>
 
-            <div class="action-row">
+            <a href="https://instagram.com/ilaikumofficial" target="_blank" class="action-row" style="text-decoration: none;">
                 <div class="icon-box">
-                    <img src="instagram.png" alt="IG" style="width: 30px; height: 30px;>
+                    <img src="instagram.png" alt="IG" style="width: 35px; height: 35px;">
                 </div>
-                <a href="https://instagram.com/ilaikumofficial" target="_blank" class="btn-pilihan" style="background: #ffcf00; color: #132c47;">KUNJUNGI INSTAGRAM KAMI</a>
-            </div>
+                <div class="btn-pilihan" style="background: #ffcf00; color: #132c47;">KUNJUNGI INSTAGRAM KAMI</div>
+            </a>
 
-            <div class="action-row">
+            <div class="action-row" onclick="const id = new URLSearchParams(window.location.search).get('id'); bukaGmail(id)">
                 <div class="icon-box white-bg">
-                    <img src="gmail.png" alt="Gmail" style="width: 30px; height: 30px;>
+                    <img src="gmail.png" alt="Gmail" style="width: 35px; height: 35px;">
                 </div>
-                <button onclick="const id = new URLSearchParams(window.location.search).get('id'); bukaGmail(id)" class="btn-pilihan" style="background: #ffffff; color: #132c47;">KONTAK VIA EMAIL</button>
+                <button class="btn-pilihan" style="background: #ffffff; color: #132c47;">KONTAK VIA EMAIL</button>
             </div>
         </div>
 
@@ -564,6 +553,7 @@
 </script>
 </body>
 </html>
+
 
 
 
