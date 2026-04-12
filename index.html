@@ -4,20 +4,112 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Database Anggota Ilaikum Magazine</title>
+
+    <!-- 🔥 path asset diperbaiki sesuai folder -->
     <link rel="icon" type="image/png" href="asset/ilaikum.png">
 
     <!-- CSS -->
     <link rel="stylesheet" href="css-styling/styling.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- QR (HARUS sebelum JS lo) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
-<!-- 🔥 ISI BODY LO 100% COPY DARI KODE ASLI -->
-<!-- GUE GAK POTONG APA PUN -->
+<div class="hero" style="display: flex; align-items: center; gap: 20px;">
+    <img src="asset/ilaikum.png" alt="Logo" style="height: 80px; width: auto;">
+    
+    <div>
+        <p style="color:var(--accent); font-weight:bold; margin-bottom:5px;">Selamat Datang!</p>
+        <h1>Database Anggota Ilaikum Magazine</h1>
+        <h1>Gunakan bilah pencarian untuk mencari data anggota Ilaikum Magazine, Have a nice day!</h1>
+    </div>
+</div>
 
-<!-- (PASTE SEMUA BODY DARI KODE LO DI SINI TANPA DIUBAH) -->
+<div class="container">
+    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Cari Nama atau UID Anggota...">
+    <div id="loading" style="text-align:center; padding:50px;">Menghubungkan ke Data Utama...</div>
+
+    <div class="table-wrapper">
+        <table id="mainTable" style="display:none;">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama & UID</th>
+                    <th>Jabatan</th>
+                     <th>Divisi</th>
+                    <th>Tahun Bergabung</th>
+                    <th>Masa Aktif</th>
+                    <th>Status</th>
+                    <th>Kode QR</th>
+                </tr>
+            </thead>
+            <tbody id="memberData"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 🔥 SEMUA MODAL & MENU TETAP -->
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <div class="profile-flex-wrapper">
+            <div class="left-photo-section">
+                <img id="m-foto" src="" class="profile-img" alt="Foto">
+            </div>
+            <div class="right-info-section">
+                <div class="modal-header">
+                    <h2 id="m-nama">Nama Lengkap</h2>
+                    <p id="m-uid">UID: -</p>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item"><span>Jabatan</span><strong id="m-jab">-</strong></div>
+                    <div class="info-item"><span>Divisi</span><strong id="m-divs">-</strong></div>
+                    <div class="info-item"><span>Tahun Bergabung</span><strong id="m-thn">-</strong></div>
+                    <div class="info-item"><span>Masa Berlaku</span><strong id="m-masa">-</strong></div>
+                    <div class="info-item"><span>Status</span><strong id="m-stat">-</strong></div>
+                </div>
+                <div style="font-size:12px; color:#ffcf00; font-weight:bold; margin-bottom:5px;">📝 JENJANG KARIER</div>
+                <div id="m-jejak" class="rekam-jejak-box">-</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="scanMenu" style="display:none; position:fixed; z-index:99999; left:0; top:0; width:100%; height:100%; background:rgba(13, 27, 42, 0.95); justify-content:center; align-items:center;">
+    <div class="modal-content" style="width: 90%; max-width: 400px; background: #132c47; border: 3px solid #ffcf00; border-radius: 30px; padding: 40px 20px; text-align: center; box-sizing: border-box;">
+        
+        <h2 style="color: #ffcf00; margin: 0 0 10px 0; font-size: 22px; font-weight: 700;">MENU LAPOR DAN VERIFIKASI</h2>
+        <p style="color: #ffffff; font-size: 13px; margin-bottom: 30px; opacity: 0.8;">Hubungi kami jika terdapat masalah pada penggunaan kartu ini</p>
+        
+        <div style="display: flex; flex-direction: column; width: 100%;">
+            <div class="action-row" onclick="bukaValidasi()">
+                <div class="icon-box">
+                    <img src="asset/logo biru.png">
+                </div>
+                <button class="btn-pilihan" style="background: #ffcf00; color: #132c47;">VERIFIKASI ANGGOTA</button>
+            </div>
+
+            <a href="https://instagram.com/ilaikumofficial" target="_blank" class="action-row" style="text-decoration: none;">
+                <div class="icon-box">
+                    <img src="asset/instagram.png">
+                </div>
+                <div class="btn-pilihan" style="background: #ffcf00; color: #132c47;">KUNJUNGI INSTAGRAM KAMI</div>
+            </a>
+
+            <div class="action-row" onclick="const id = new URLSearchParams(window.location.search).get('id'); bukaGmail(id)">
+                <div class="icon-box white-bg">
+                    <img src="asset/gmail.png">
+                </div>
+                <button class="btn-pilihan" style="background: #ffffff; color: #132c47;">KONTAK VIA EMAIL</button>
+            </div>
+        </div>
+
+        <p onclick="tutupMenu()" style="margin-top: 25px; color: #ffffff; cursor: pointer;">Tutup menu</p>
+    </div>
+</div>
 
 <!-- JS -->
 <script src="js-machine/machine.js"></script>
