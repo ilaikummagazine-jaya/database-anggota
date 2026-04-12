@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Anggota Ilaikum Magazine</title>
+
+    <link rel="icon" type="image/png" href="asset/ilaikum.png">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css-styling/styling.css">
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- QR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+
+<body>
+
+<div class="hero">
+    <img src="asset/ilaikum.png">
+    <div>
+        <p class="welcome-text">Selamat Datang!</p>
+        <h1>Database Anggota Ilaikum Magazine</h1>
+        <h1 class="subtitle">Gunakan bilah pencarian untuk mencari data anggota Ilaikum Magazine</h1>
+    </div>
+</div>
+
+<div class="container">
+    <input type="text" id="searchInput" class="search-box" placeholder="🔍 Cari Nama atau UID Anggota...">
+
+    <div id="loading">Menghubungkan ke Data Utama...</div>
+
+    <div class="table-wrapper">
+        <table id="mainTable">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama & UID</th>
+                    <th>Jabatan</th>
+                    <th>Divisi</th>
+                    <th>Tahun</th>
+                    <th>Masa</th>
+                    <th>Status</th>
+                    <th>QR</th>
+                </tr>
+            </thead>
+            <tbody id="memberData"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Profile -->
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+
+        <div class="profile-flex-wrapper">
+            <div class="left-photo-section">
+                <img id="m-foto" class="profile-img">
+            </div>
+
+            <div class="right-info-section">
+                <h2 id="m-nama"></h2>
+                <p id="m-uid"></p>
+
+                <div class="info-grid">
+                    <div class="info-item"><span>Jabatan</span><strong id="m-jab"></strong></div>
+                    <div class="info-item"><span>Divisi</span><strong id="m-divs"></strong></div>
+                    <div class="info-item"><span>Tahun</span><strong id="m-thn"></strong></div>
+                    <div class="info-item"><span>Masa</span><strong id="m-masa"></strong></div>
+                    <div class="info-item"><span>Status</span><strong id="m-stat"></strong></div>
+                </div>
+
+                <div id="m-jejak" class="rekam-jejak-box"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script src="js-machine/machine.js"></script>
+
+</body>
+</html>
