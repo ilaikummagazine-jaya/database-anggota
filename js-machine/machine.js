@@ -40,7 +40,9 @@ async function getData() {
                 thn: row.c[4] ? row.c[4].v : '-',
                 masa: row.c[5] ? row.c[5].v : '-',
                 stat: row.c[6] ? row.c[6].v : 'Aktif',
-                foto: row.c[7] ? row.c[7].v : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+                foto: row.c[7] 
+                    ? convertDriveLink(row.c[7].v) 
+                    : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
                 jejak: row.c[8] ? row.c[8].v : 'Belum ada jenjang karier.',
             };
 
@@ -165,4 +167,19 @@ Saya ingin melaporkan permasalahan seputar kartu pers dengan UID ${idAnggota}.
             window.location.href = `mailto:${tujuan}?subject=${subjek}&body=${isi}`;
         }
     }, 500);
+}
+
+function convertDriveLink(url) {
+    if (!url) return '';
+
+    // Kalau bukan link drive, langsung pakai
+    if (!url.includes("drive.google.com")) return url;
+
+    // Ambil ID file dari link
+    const match = url.match(/\/d\/(.*?)\//);
+    if (match && match[1]) {
+        return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+
+    return url;
 }
