@@ -42,7 +42,7 @@ async function getData() {
                 stat: row.c[6] ? row.c[6].v : 'Aktif',
                 foto: row.c[7] 
                     ? convertDriveLink(row.c[7].v) 
-                    : 'https://docs.google.com/spreadsheets/d/1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig',
+                    : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
                 jejak: row.c[8] ? row.c[8].v : 'Belum ada jenjang karier.',
             };
 
@@ -172,13 +172,22 @@ Saya ingin melaporkan permasalahan seputar kartu pers dengan UID ${idAnggota}.
 function convertDriveLink(url) {
     if (!url) return '';
 
-    // Kalau bukan link drive, langsung pakai
     if (!url.includes("drive.google.com")) return url;
 
-    // Ambil ID file dari link
-    const match = url.match(/\/d\/(.*?)\//);
-    if (match && match[1]) {
-        return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    let fileId = '';
+
+    // format /d/
+    let match = url.match(/\/d\/(.*?)\//);
+    if (match && match[1]) fileId = match[1];
+
+    // format id=
+    if (!fileId) {
+        match = url.match(/id=(.*?)(?:&|$)/);
+        if (match && match[1]) fileId = match[1];
+    }
+
+    if (fileId) {
+        return `https://drive.google.com/uc?export=view&id=${fileId}`;
     }
 
     return url;
