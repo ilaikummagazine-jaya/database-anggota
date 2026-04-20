@@ -42,7 +42,7 @@ async function getData() {
                 stat: row.c[6] ? row.c[6].v : 'Aktif',
                 foto: row.c[7] 
                     ? convertDriveLink(row.c[7].v) 
-                    : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+                    : 'https://docs.google.com/spreadsheets/d/1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig',
                 jejak: row.c[8] ? row.c[8].v : 'Belum ada jenjang karier.',
             };
 
