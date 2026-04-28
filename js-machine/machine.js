@@ -92,6 +92,7 @@ function showProfile(uid) {
         document.getElementById('m-jejak').innerHTML = m.jejak.replace(/\n/g, '<br>');
         document.getElementById('profileModal').style.display = 'block';
         document.getElementById('scanMenu').style.display = 'none';
+        console.log(convertDriveLink(row.c[7].v));
     }
 }
 
