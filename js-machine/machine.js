@@ -93,6 +93,7 @@ function showProfile(uid) {
         document.getElementById('profileModal').style.display = 'block';
         document.getElementById('scanMenu').style.display = 'none';
         console.log(convertDriveLink(row.c[7].v));
+        console.log(m.foto);
     }
 }
 
