@@ -85,7 +85,11 @@ function showProfile(uid) {
     if (m) {
         document.getElementById('m-nama').innerText = m.nama;
         document.getElementById('m-uid').innerText = "UID: " + m.uid;
-        document.getElementById('m-foto').src = m.foto;
+        const img = document.getElementById('m-foto');
+        img.src = m.foto;
+
+        img.onload = () => console.log("GAMBAR BERHASIL LOAD");
+        img.onerror = () => console.log("GAGAL LOAD GAMBAR:", m.foto);
         document.getElementById('m-jab').innerText = m.jab;
         document.getElementById('m-divs').innerText = m.divs;
         document.getElementById('m-thn').innerText = m.thn;
@@ -95,6 +99,8 @@ function showProfile(uid) {
         document.getElementById('profileModal').style.display = 'block';
         document.getElementById('scanMenu').style.display = 'none';
         console.log(m.foto);
+
+        
     }
 }
 
