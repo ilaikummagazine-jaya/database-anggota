@@ -31,7 +31,8 @@ async function getData() {
         rows.forEach((row, i) => {
             const uid = row.c[0] ? String(row.c[0].v).trim() : '';
             if (uid.toLowerCase().includes("nomor") || uid === "") return;
-
+                console.log("RAW FOTO:", row.c[7]);
+                console.log("VALUE FOTO:", row.c[7]?.v);
             const member = {
                 uid: uid,
                 nama: row.c[1] ? row.c[1].v : '-',
@@ -44,6 +45,7 @@ async function getData() {
                     ? convertDriveLink(row.c[7].v) 
                     : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
                 jejak: row.c[8] ? row.c[8].v : 'Belum ada jenjang karier.',
+
             };
 
             allMembers.push(member);
