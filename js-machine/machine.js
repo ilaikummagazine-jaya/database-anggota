@@ -1,5 +1,5 @@
 const SHEET_ID = '1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig';
-const url = `https://docs.google.com/spreadsheets/d/1-YqXgszRPBG0Xjc2GoHrpl0SLVjz9NRxR1k82vLLyig/gviz/tq?tqx=out:json&sheet=data`;
+const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=data`;
 const currentUrl = window.location.origin + window.location.pathname;
 
 let allMembers = [];
@@ -94,7 +94,6 @@ function showProfile(uid) {
         document.getElementById('m-jejak').innerHTML = m.jejak.replace(/\n/g, '<br>');
         document.getElementById('profileModal').style.display = 'block';
         document.getElementById('scanMenu').style.display = 'none';
-        console.log(convertDriveLink(row.c[7].v));
         console.log(m.foto);
     }
 }
