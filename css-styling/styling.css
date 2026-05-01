@@ -2,11 +2,9 @@
     --primary: #132C47;
     --accent: #FFCF00;
     --bg: #f4f7f6;
-
     font-size: 16px;
 }
 
-/* BASE */
 body {
     font-family: 'Montserrat', sans-serif;
     background: var(--bg);
@@ -19,11 +17,13 @@ body {
 .hero {
     background: linear-gradient(135deg, #132c47 0%, #1e4571 100%);
     color: white;
-    padding: clamp(16px, 4vw, 30px);
+    padding: clamp(18px, 4vw, 30px);
     display: flex;
     align-items: center;
     gap: 15px;
     flex-wrap: wrap;
+    position: relative;
+    overflow: hidden;
 }
 
 .hero img {
@@ -102,16 +102,10 @@ td {
     vertical-align: middle;
 }
 
-tr {
-    cursor: pointer;
-    transition: 0.2s;
-}
-
 tbody tr:hover {
     background: #f0f4f8;
 }
 
-/* TABLE ALIGNMENT */
 table td:nth-child(2) {
     text-align: left;
     font-weight: bold;
@@ -169,7 +163,7 @@ table td:nth-child(n+3) {
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
 
-/* PROFILE LAYOUT */
+/* PROFILE */
 .profile-flex-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -185,17 +179,6 @@ table td:nth-child(n+3) {
     padding: 20px;
 }
 
-.left-photo-section::after {
-    content: "";
-    position: absolute;
-    top: auto;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: #ffcf00;
-}
-
 .profile-img {
     width: clamp(120px, 25vw, 200px);
     height: clamp(120px, 25vw, 200px);
@@ -204,129 +187,17 @@ table td:nth-child(n+3) {
     object-fit: cover;
 }
 
-/* RIGHT */
 .right-info-section {
     flex: 1;
     padding: 1.5rem;
     color: white;
 }
 
-/* HEADER */
-.modal-header h2 {
-    margin: 0;
-    color: #ffcf00;
-    font-size: clamp(18px, 3vw, 28px);
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-.modal-header p {
-    margin: 5px 0 20px;
-    opacity: 0.8;
-    font-size: 0.9rem;
-}
-
-/* ACTION ROW */
-.action-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 15px;
-    cursor: pointer;
-}
-
-.icon-box {
-    width: 60px;
-    height: 60px;
-    background: #ffcf00;
-    border-radius: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.icon-box img {
-    width: 50px;
-    height: 50px;
-    object-fit: contain;
-}
-
-.btn-pilihan {
-    flex-grow: 1;
-    height: 60px;
-    border: none;
-    border-radius: 15px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* INFO GRID */
+/* GRID */
 .info-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 12px;
-    margin-bottom: 20px;
-}
-
-.info-item {
-    background: #1e4571;
-    padding: 10px;
-    border-radius: 8px;
-}
-
-.info-item span {
-    font-size: 10px;
-    color: #ffcf00;
-    text-transform: uppercase;
-    display: block;
-}
-
-.info-item strong {
-    font-size: 13px;
-    color: white;
-}
-
-/* REKAM JEJAK */
-.rekam-jejak-box {
-    background: rgba(255,255,255,0.05);
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 12px;
-    color: #eee;
-    border-left: 3px solid #ffcf00;
-}
-
-/* CLOSE */
-.close-btn {
-    position: absolute;
-    right: 20px;
-    top: 15px;
-    font-size: 25px;
-    color: white;
-    cursor: pointer;
-}
-
-/* PRINT */
-@media print {
-    body * { visibility: hidden; }
-    .print-area, .print-area * { visibility: visible; }
-
-    .print-area {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 300px;
-        height: 300px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: white;
-    }
 }
 
 /* MOBILE */
@@ -335,17 +206,31 @@ table td:nth-child(n+3) {
     .hero {
         flex-direction: column;
         text-align: center;
+        padding: 20px 15px;
+    }
+
+    .hero h1:first-of-type {
+        font-size: 1.6rem;
+    }
+
+    .hero h1:last-of-type {
+        font-size: 0.85rem;
+    }
+
+    th, td {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+
+    table {
+        min-width: 700px;
+    }
+
+    .container {
+        margin-top: -10px;
     }
 
     .profile-flex-wrapper {
         flex-direction: column;
-    }
-
-    .right-info-section {
-        padding: 1rem;
-    }
-
-    .modal-header h2 {
-        font-size: 20px;
     }
 }
