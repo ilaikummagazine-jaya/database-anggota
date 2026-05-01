@@ -174,12 +174,13 @@ table td:nth-child(8) {
 }
 
 .left-photo-section {
-    flex: 0 0 220px;
+    flex: 0 0 280px;
     background: linear-gradient(135deg, #132c47 0%, #1e4571 100%);
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
+    padding: 20px;
 }
 
 .left-photo-section::after {
@@ -193,7 +194,7 @@ table td:nth-child(8) {
 }
 
 .profile-img {
-    width: 150px;
+    width: 200px;
     height: 200px;
     border-radius: 50%;
     border: 5px solid white;
@@ -378,8 +379,10 @@ table td:nth-child(8) {
 
 @media screen and (max-width: 600px) {
     .modal-content {
-        width: 95%;
-        margin: 20% auto;
+        width: 92%;
+        max-width: 380px;
+        margin: 8% auto;
+        border-radius: 16px;
     }
 
     .profile-flex-wrapper {
@@ -387,16 +390,57 @@ table td:nth-child(8) {
     }
 
     .left-photo-section {
-        flex: 0 0 auto;
         width: 100%;
-        padding: 20px 0;
+        padding: 25px 0;
+        flex: none;
+    }
+
+    .left-photo-section::after {
+        width: 100%;
+        height: 6px;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+    .profile-img {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+    }
+
+    .right-info-section {
+        padding: 18px;
+    }
+
+    .modal-header h2 {
+        font-size: 22px;
+        line-height: 1.2;
+    }
+
+    .modal-header p {
+        font-size: 12px;
+        margin-bottom: 15px;
     }
 
     .info-grid {
         grid-template-columns: 1fr;
+        gap: 10px;
     }
 
-    .right-info-section {
-        padding: 15px;
+    .info-item strong {
+        font-size: 12px;
+    }
+
+    .rekam-jejak-box {
+        font-size: 11px;
+        padding: 10px;
+    }
+
+    .close-btn {
+        font-size: 22px;
+        top: 10px;
+        right: 14px;
     }
 }
