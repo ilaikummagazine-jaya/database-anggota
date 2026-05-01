@@ -161,12 +161,25 @@ function dl(uid, name) {
             const x = (canvas.width - logoSize) / 2;
             const y = (canvas.height - logoSize) / 2;
 
-            // background putih biar QR tetap kebaca
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(x - 8, y - 8, logoSize + 16, logoSize + 16);
+        ctx.save();
 
-            // gambar logo
-            ctx.drawImage(logo, x, y, logoSize, logoSize);
+        // lingkaran putih di belakang logo
+        ctx.beginPath();
+        ctx.arc(
+            canvas.width / 2,
+            canvas.height / 2,
+            logoSize / 2 + 8,
+            0,
+            Math.PI * 2
+        );
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        ctx.closePath();
+
+        // gambar logo
+        ctx.drawImage(logo, x, y, logoSize, logoSize);
+
+        ctx.restore();
 
             const link = document.createElement('a');
             link.href = canvas.toDataURL('image/png');
