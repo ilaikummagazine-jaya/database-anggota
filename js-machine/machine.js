@@ -157,7 +157,7 @@ function dl(uid, name) {
         const logo = new Image();
 
         logo.onload = function () {
-            const logoSize = 90;
+            const logoSize = 70;
             const x = (canvas.width - logoSize) / 2;
             const y = (canvas.height - logoSize) / 2;
 
