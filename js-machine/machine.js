@@ -122,28 +122,31 @@ function bukaValidasi() {
 
 function dl(uid, name) {
     const tempDiv = document.createElement('div');
+    const member = allMembers.find(x => x.uid === uid);
+
+    if (!member) return;
 
     new QRCode(tempDiv, {
-        text: `${currentUrl}?view=pilihan&id=${uid}`,
-        width: 300,
-        height: 300,
-        colorDark: "#132c47",
-        colorLight: "#ffffff",
+        text: `${currentUrl}?p=1&i=${member.shortId}`,
+        width: 500,
+        height: 500,
+        colorDark: '#132c47',
+        colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.H
     });
 
     setTimeout(() => {
         const canvas = tempDiv.querySelector('canvas');
-        if (canvas) {
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL("image/png");
-            link.download = `QR_ILAIKUM_${name}_${uid}.png`;
-            link.click();
-        }
-        tempDiv.remove();
-    }, 100);
-}
+        if (!canvas) return;
 
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = `QR_ILAIKUM_${name}_${uid}.png`;
+        link.click();
+
+        tempDiv.remove();
+    }, 150);
+}
 document.getElementById('searchInput').oninput = (e) => {
     const val = e.target.value.toLowerCase();
     document.querySelectorAll('#memberData tr').forEach(tr => {
