@@ -174,12 +174,13 @@ table td:nth-child(8) {
 }
 
 .left-photo-section {
-    flex: 0 0 220px;
+    flex: 0 0 280px;
     background: linear-gradient(135deg, #132c47 0%, #1e4571 100%);
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
+    padding: 20px;
 }
 
 .left-photo-section::after {
@@ -193,7 +194,7 @@ table td:nth-child(8) {
 }
 
 .profile-img {
-    width: 150px;
+    width: 200px;
     height: 200px;
     border-radius: 50%;
     border: 5px solid white;
