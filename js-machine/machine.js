@@ -146,21 +146,38 @@ function dl(uid, name) {
         height: 500,
         colorDark: '#132c47',
         colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.M
+        correctLevel: QRCode.CorrectLevel.H
     });
 
     setTimeout(() => {
         const canvas = tempDiv.querySelector('canvas');
+        if (!canvas) return;
 
-        if (canvas) {
+        const ctx = canvas.getContext('2d');
+        const logo = new Image();
+
+        logo.onload = function () {
+            const logoSize = 90;
+            const x = (canvas.width - logoSize) / 2;
+            const y = (canvas.height - logoSize) / 2;
+
+            // background putih biar QR tetap kebaca
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(x - 8, y - 8, logoSize + 16, logoSize + 16);
+
+            // gambar logo
+            ctx.drawImage(logo, x, y, logoSize, logoSize);
+
             const link = document.createElement('a');
             link.href = canvas.toDataURL('image/png');
             link.download = `QR_ILAIKUM_${name}_${uid}.png`;
             link.click();
-        }
 
-        tempDiv.remove();
-    }, 150);
+            tempDiv.remove();
+        };
+
+        logo.src = 'asset/ilaikum.svg';
+    }, 200);
 }
 
 document.getElementById('searchInput').oninput = (e) => {
