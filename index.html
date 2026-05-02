@@ -99,7 +99,7 @@
                 <div class="btn-pilihan" style="background: #ffcf00; color: #132c47;">KUNJUNGI INSTAGRAM KAMI</div>
             </a>
 
-            <div class="action-row" onclick="const id = new URLSearchParams(window.location.search).get('id'); bukaGmail(id)">
+            <div class="action-row" onclick="const id = new URLSearchParams(window.location.search).get('i'); bukaGmail(id)">
                 <div class="icon-box white-bg">
                     <img src="asset/gmail.png">
                 </div>
@@ -113,6 +113,13 @@
 
 <!-- JS -->
 <script src="js-machine/machine.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    checkUrlImmediately();
+    getData();
+});
+</script>
 
 </body>
 </html>

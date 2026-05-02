@@ -15,12 +15,14 @@ function checkUrlImmediately() {
 
     if (id && view === '1') {
         document.getElementById('scanMenu').classList.add('show');
+    
+    }
 }
 
 async function getData() {
 
     allMembers = [];
-    
+
     try {
         const res = await fetch(url);
         const text = await res.text();
