@@ -119,10 +119,12 @@ function showProfile(uid) {
 
     document.getElementById('profileModal').classList.add('show');
     document.getElementById('scanMenu').classList.remove('show');
+    document.body.classList.add('modal-open');
 }
 
 function closeModal() {
     document.getElementById('profileModal').classList.remove('show');
+    document.body.classList.remove('modal-open');
 
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('i');

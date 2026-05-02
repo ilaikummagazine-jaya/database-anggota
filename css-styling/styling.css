@@ -144,6 +144,10 @@ table td:nth-child(8) {
     color: #95a5a6;
 }
 
+body.modal-open thead {
+    display: none;
+}
+
 .modal {
     display: none;
     position: fixed;
