@@ -94,11 +94,21 @@ async function getData() {
 }
 
 function showProfile(uid) {
-    const m = allMembers.find(
-        x => x.uid === uid || x.shortId === uid
-    );
+    if (!uid) return;
 
-    if (!m) return;
+    const cleanUid = String(uid).trim().replace(/^0+/, '');
+
+    const m = allMembers.find(member => {
+        const fullUid = String(member.uid).trim();
+        const shortUid = String(member.shortId).trim().replace(/^0+/, '');
+
+        return fullUid === String(uid).trim() || shortUid === cleanUid;
+    });
+
+    if (!m) {
+        alert('Data anggota tidak ditemukan.');
+        return;
+    }
 
     document.getElementById('m-nama').innerText = m.nama;
     document.getElementById('m-uid').innerText = 'UID: ' + m.uid;
