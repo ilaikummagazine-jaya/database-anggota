@@ -15,7 +15,6 @@ function checkUrlImmediately() {
 
     if (id && view === '1') {
         document.getElementById('scanMenu').classList.add('show');
-    
     }
 }
 
@@ -112,20 +111,18 @@ function showProfile(uid) {
 
     document.getElementById('m-nama').innerText = m.nama;
     document.getElementById('m-uid').innerText = 'UID: ' + m.uid;
-
-    const img = document.getElementById('m-foto');
-    img.src = m.foto;
-
-    img.onerror = () => {
-        img.src = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
-    };
-
     document.getElementById('m-jab').innerText = m.jab;
     document.getElementById('m-divs').innerText = m.divs;
     document.getElementById('m-thn').innerText = m.thn;
     document.getElementById('m-masa').innerText = m.masa;
     document.getElementById('m-stat').innerText = m.stat;
     document.getElementById('m-jejak').innerHTML = m.jejak.replace(/\n/g, '<br>');
+
+    const img = document.getElementById('m-foto');
+    img.src = m.foto;
+    img.onerror = () => {
+        img.src = 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
+    };
 
     document.getElementById('profileModal').classList.add('show');
     document.getElementById('scanMenu').classList.remove('show');
@@ -160,6 +157,11 @@ function bukaValidasi() {
     }
 
     showProfile(id);
+}
+
+function bukaKontak() {
+    const id = new URLSearchParams(window.location.search).get('i');
+    bukaGmail(id);
 }
 
 function dl(uid, name) {
