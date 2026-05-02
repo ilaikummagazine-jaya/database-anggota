@@ -83,7 +83,7 @@ async function getData() {
         const id = urlParams.get('i');
         const view = urlParams.get('p');
 
-        if (id && view !== '1') {
+        if (id && view !== 'profile') {
             showProfile(id);
         }
 
@@ -151,7 +151,15 @@ function tutupMenu() {
 
 function bukaValidasi() {
     const id = new URLSearchParams(window.location.search).get('i');
-    if (id) showProfile(id);
+
+    if (!id) return;
+
+    if (allMembers.length === 0) {
+        alert('Data masih dimuat, tunggu sebentar...');
+        return;
+    }
+
+    showProfile(id);
 }
 
 function dl(uid, name) {
