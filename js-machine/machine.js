@@ -10,15 +10,17 @@ function checkUrlImmediately() {
     const id = urlParams.get('i');
     const view = urlParams.get('p');
 
-    document.getElementById('scanMenu').style.display = 'none';
-    document.getElementById('profileModal').style.display = 'none';
+    document.getElementById('scanMenu').classList.remove('show');
+    document.getElementById('profileModal').classList.remove('show');
 
     if (id && view === '1') {
-        document.getElementById('scanMenu').style.setProperty('display', 'flex', 'important');
-    }
+        document.getElementById('scanMenu').classList.add('show');
 }
 
 async function getData() {
+
+    allMembers = [];
+    
     try {
         const res = await fetch(url);
         const text = await res.text();
@@ -44,7 +46,7 @@ async function getData() {
                     ? convertDriveLink(row.c[7].v) 
                     : 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
                 jejak: row.c[8] ? row.c[8].v : 'Belum ada jenjang karier.',
-
+                shortId: uid.split('-').pop(),
             };
 
             allMembers.push(member);
@@ -113,16 +115,24 @@ function showProfile(uid) {
     document.getElementById('m-stat').innerText = m.stat;
     document.getElementById('m-jejak').innerHTML = m.jejak.replace(/\n/g, '<br>');
 
-    document.getElementById('profileModal').style.display = 'block';
-    document.getElementById('scanMenu').style.display = 'none';
+    document.getElementById('profileModal').classList.add('show');
+    document.getElementById('scanMenu').classList.remove('show');
 }
 
 function closeModal() {
-    document.getElementById('profileModal').style.display = 'none';
+    document.getElementById('profileModal').classList.remove('show');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('i');
+    const view = urlParams.get('p');
+
+    if (id && view === '1') {
+        document.getElementById('scanMenu').classList.add('show');
+    }
 }
 
 function tutupMenu() {
-    document.getElementById('scanMenu').style.display = 'none';
+    document.getElementById('scanMenu').classList.remove('show');
 }
 
 function bukaValidasi() {
