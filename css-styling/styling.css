@@ -152,12 +152,18 @@ table td:nth-child(8) {
     backdrop-filter: blur(8px);
 
     /* ini kunci */
-    display: flex;
+
     align-items: center;
     justify-content: center;
 
     padding: 20px;
     box-sizing: border-box;
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-content {
