@@ -78,14 +78,6 @@ async function getData() {
         document.getElementById('loading').style.display = 'none';
         document.getElementById('mainTable').style.display = 'table';
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('i');
-        const view = urlParams.get('p');
-
-        if (id && view !== 'profile') {
-            showProfile(id);
-        }
-
     } catch (e) {
         console.error(e);
         document.getElementById('loading').innerText = 'Gagal memuat data.';
